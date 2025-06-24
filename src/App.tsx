@@ -16,6 +16,7 @@ function App() {
         <Route path="/professor-dashboard" element={<ProfessorDashboard />} />
         <Route path="/attendance" element={<AttendanceTablePage />} />
         <Route path="/student" element={<StudentSignInPage />} />
+        <Route path="*" element={<SignInPage />} />
       </Routes>
     </>
   );

@@ -1,4 +1,4 @@
-import { Flex, Heading, Input, InputGroup, Table } from "@chakra-ui/react";
+import { Box, Flex, Heading, Input, InputGroup, Table } from "@chakra-ui/react";
 import { LuSearch } from "react-icons/lu";
 import AttendanceForm from "../components/AttendanceForm.tsx";
 import { useState } from "react";
@@ -58,12 +58,20 @@ const ProfessorDashboard = () => {
   };
 
   return (
-    <>
-      <Flex bg="background.primary" height="100vh" direction="column" p="4">
-        <Heading fontWeight="bold" color="primary.900">
-          Welcome, Professor John
-        </Heading>
-        <Flex as="header" width="100%" justify="flex-end">
+    <Box boxSize="md" w="100%">
+      <Flex height="100vh" direction="column" p="4">
+        <Flex
+          as="header"
+          width="100%"
+          justify="space-between"
+          align="center"
+          py="4"
+          px="6"
+        >
+          <Heading fontWeight="bold" color="primary.900">
+            Welcome, Professor John
+          </Heading>
+
           <CustomButton
             onClick={handleSignOut}
             title="Sign Out"
@@ -111,7 +119,7 @@ const ProfessorDashboard = () => {
           {showForm && <AttendanceForm onCancel={() => setShowForm(false)} />}
         </Flex>
       </Flex>
-    </>
+    </Box>
   );
 };
 

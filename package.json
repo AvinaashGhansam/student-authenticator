@@ -11,6 +11,7 @@
     "release": "semantic-release"
   },
   "dependencies": {
+    "@chakra-ui/cli": "^3.21.0",
     "@chakra-ui/form-control": "^2.2.0",
     "@chakra-ui/react": "^3.21.0",
     "@clerk/clerk-react": "^5.32.1",
@@ -19,6 +20,7 @@
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-icons": "^5.5.0",
+    "react-modal": "^3.16.3",
     "react-router-dom": "^7.6.2"
   },
   "devDependencies": {
@@ -28,6 +30,7 @@
     "@semantic-release/npm": "^12.0.1",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
+    "@types/react-modal": "^3.16.3",
     "@vitejs/plugin-react": "^4.4.1",
     "eslint": "^9.25.0",
     "eslint-plugin-react-hooks": "^5.2.0",
