@@ -63,10 +63,9 @@ const ProfessorDashboard = () => {
         <Flex
           as="header"
           width="100%"
-          justify="space-between"
           align="center"
-          py="4"
-          px="6"
+          justify="space-between"
+          mb="4"
         >
           <Heading fontWeight="bold" color="primary.900">
             Welcome, Professor John
@@ -76,6 +75,7 @@ const ProfessorDashboard = () => {
             onClick={handleSignOut}
             title="Sign Out"
             bg="warning.900"
+            display={{ base: "none", md: "inline-flex" }}
           />
         </Flex>
 
