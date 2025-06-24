@@ -1,15 +1,10 @@
-import {
-  Button,
-  Flex,
-  Heading,
-  Input,
-  InputGroup,
-  Table,
-} from "@chakra-ui/react";
+import { Flex, Heading, Input, InputGroup, Table } from "@chakra-ui/react";
 import { LuSearch } from "react-icons/lu";
 import AttendanceForm from "../components/AttendanceForm.tsx";
 import { useState } from "react";
 import CustomButton from "../components/ui/CustomButton.tsx";
+import { useAuth } from "@clerk/clerk-react";
+import { toaster } from "../components/ui/toaster.tsx";
 
 const items = [
   {
@@ -39,8 +34,28 @@ const items = [
   },
 ];
 
-const HomePage = () => {
+const ProfessorDashboard = () => {
   const [showForm, setShowForm] = useState(false);
+  const { signOut /*isLoading*/ } = useAuth();
+  // TODO: implement loading
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      toaster.create({
+        title: "Signed out",
+        type: "success",
+        description: "You have been signed out successfully.",
+      });
+    } catch (error) {
+      console.error(error);
+      toaster.create({
+        title: "Sign out failed",
+        type: "error",
+        description: "There was an issue signing you out.",
+      });
+    }
+  };
 
   return (
     <>
@@ -49,9 +64,11 @@ const HomePage = () => {
           Welcome, Professor John
         </Heading>
         <Flex as="header" width="100%" justify="flex-end">
-          <Button bg="warning.900" fontWeight="bold">
-            Sign Out
-          </Button>
+          <CustomButton
+            onClick={handleSignOut}
+            title="Sign Out"
+            bg="warning.900"
+          />
         </Flex>
 
         <Flex flex="1" gap="8" p="4">
@@ -98,4 +115,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default ProfessorDashboard;
