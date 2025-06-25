@@ -14,6 +14,8 @@ import { useSignUp } from "@clerk/clerk-react";
 import { useNavigate } from "react-router-dom";
 import { toaster } from "../components/ui/toaster.tsx";
 import { useClerk } from "@clerk/clerk-react";
+import { BeatLoader } from "react-spinners";
+import EmailVerificationModal from "../components/EmailVerificationModal.tsx";
 
 Modal.setAppElement("#root");
 
@@ -21,9 +23,10 @@ const SignUpPage = () => {
   const navigate = useNavigate();
   const { user } = useClerk();
   const { signUp, isLoaded, setActive } = useSignUp();
+  const [isSigningUp, setIsSigningUp] = useState(false);
+  const [isVerifying, setIsVerifying] = useState(false);
   // TODO: Button Sign Up
   // TODO: Spinner
-  // const [disable, setDisable] = useState<boolean>(true);
 
   const [verifyEmail, setVerifyEmail] = useState<{
     state: "default" | "pending" | "success";
@@ -41,11 +44,20 @@ const SignUpPage = () => {
     password: "",
     confirmPassword: "",
   });
+  const isFormValid =
+    form.firstName.trim() !== "" &&
+    form.lastName.trim() !== "" &&
+    form.email.trim() !== "" &&
+    form.password.trim() !== "" &&
+    form.confirmPassword.trim() !== "" &&
+    form.password === form.confirmPassword;
 
   const onSignUpPress = async () => {
     if (!isLoaded) {
       return;
     }
+    setIsSigningUp(true);
+
     // TODO: enable
     /*
     if (!form.email.endsWith("@rowan.edu")) {
@@ -56,6 +68,7 @@ const SignUpPage = () => {
       });
       return;
     }*/
+
     try {
       await signUp?.create({
         emailAddress: form.email,
@@ -71,18 +84,21 @@ const SignUpPage = () => {
           type: "error",
         });
       }
+    } finally {
+      setIsSigningUp(false);
     }
   };
 
   const onVerifyPress = async () => {
     if (!isLoaded) return;
+    setIsVerifying(true);
 
     try {
       const signUpAttempt = await signUp?.attemptEmailAddressVerification({
         code: verifyEmail.code,
       });
 
-      if (signUpAttempt.status === "complete") {
+      if (signUpAttempt?.status === "complete") {
         await setActive({ session: signUpAttempt.createdSessionId });
         await user?.update({
           unsafeMetadata: {
@@ -96,9 +112,25 @@ const SignUpPage = () => {
           type: "success",
         });
         navigate("/professor-dashboard");
+      } else {
+        setVerifyEmail((prev) => ({
+          state: "pending", // FORCE update to modal
+          code: prev.code,
+          error: "Verification failed. Please check the code.",
+        }));
       }
     } catch (error) {
-      console.log("Verification error", error);
+      console.error("Verification error", error);
+      setVerifyEmail((prev) => ({
+        state: "pending", // FORCE update to modal
+        code: prev.code,
+        error:
+          error instanceof Error
+            ? error.message
+            : "Invalid verification code. Please try again.",
+      }));
+    } finally {
+      setIsVerifying(false);
     }
   };
 
@@ -149,7 +181,14 @@ const SignUpPage = () => {
             />
           </Field.Root>
           <Box id="clerk-captcha" mb={4} />
-          <CustomButton title="Sign Up" onClick={onSignUpPress} mt={4} />
+          <CustomButton
+            title="Sign Up"
+            onClick={onSignUpPress}
+            mt={4}
+            loading={isSigningUp}
+            disabled={!isFormValid || isSigningUp}
+            spinner={<BeatLoader size={8} color="white" />}
+          />
           <Text
             fontWeight="light"
             color="text.secondary"
@@ -167,55 +206,28 @@ const SignUpPage = () => {
           </Text>
         </Container>
       </Flex>
-
-      <Modal
+      <EmailVerificationModal
         isOpen={verifyEmail.state === "pending"}
-        onRequestClose={() =>
-          setVerifyEmail({ ...verifyEmail, state: "default" })
+        email={form.email}
+        code={verifyEmail.code}
+        error={verifyEmail.error}
+        isVerifying={isVerifying}
+        onClose={() =>
+          setVerifyEmail({
+            state: "default",
+            code: "",
+            error: "",
+          })
         }
-        style={{
-          content: {
-            top: "50%",
-            left: "50%",
-            right: "auto",
-            bottom: "auto",
-            transform: "translate(-50%, -50%)",
-          },
-        }}
-        contentLabel="Email Verification"
-      >
-        <Heading size="md" mb={4}>
-          Verify your Email
-        </Heading>
-        <Text mb={4}>
-          We sent a verification code to <b>{form.email}</b>
-        </Text>
-        <Field.Root>
-          <Field.Label>Verification Code</Field.Label>
-          <Input
-            placeholder="12345"
-            value={verifyEmail.code}
-            onChange={(e) =>
-              setVerifyEmail({ ...verifyEmail, code: e.target.value })
-            }
-          />
-        </Field.Root>
-        {verifyEmail.error && (
-          <Text color="red.500" mt={2}>
-            {verifyEmail.error}
-          </Text>
-        )}
-        <Flex justify="flex-end" gap={4} mt={6}>
-          <CustomButton
-            title="Cancel"
-            bg="warning.900"
-            onClick={() =>
-              setVerifyEmail({ ...verifyEmail, state: "default", code: "" })
-            }
-          />
-          <CustomButton title="Verify" onClick={onVerifyPress} />
-        </Flex>
-      </Modal>
+        onVerify={onVerifyPress}
+        onChangeCode={(value) =>
+          setVerifyEmail((prev) => ({
+            ...prev,
+            code: value,
+            error: "",
+          }))
+        }
+      />
     </Box>
   );
 };

@@ -9,7 +9,6 @@ import { Toaster } from "./components/ui/toaster.tsx";
 function App() {
   return (
     <>
-      <Toaster />
       <Routes>
         <Route path="/" element={<SignInPage />} />
         <Route path="/signup" element={<SignUpPage />} />
@@ -18,6 +17,7 @@ function App() {
         <Route path="/student" element={<StudentSignInPage />} />
         <Route path="*" element={<SignInPage />} />
       </Routes>
+      <Toaster/>
     </>
   );
 }

@@ -20,7 +20,9 @@ const SignInPage = () => {
   const navigate = useNavigate();
 
   const handleSignIn = async () => {
-    if (!isLoaded) return;
+    if (!isLoaded) {
+      return;
+    }
 
     try {
       if (!password || !email || !password.length) {
