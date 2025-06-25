@@ -1,0 +1,35 @@
+{
+  "sheets": [
+    {
+      "id": "sheet-001",
+      "reportId": "RPT-ABC-001",
+      "className": "Intro to Computer Science",
+      "dateCreated": "2025-06-25",
+      "secretKey": "abc123",
+      "isActive": false
+    }
+  ],
+  "logs": [
+    {
+      "id": "student-004",
+      "sheetId": "sheet-001",
+      "name": "Jane Doe",
+      "signedInAt": "2025-06-25T13:00:00Z",
+      "className": "Intro to Computer Science"
+    },
+    {
+      "id": "4866edd0-2e39-4eb5-b9d8-a9cd4e96e260",
+      "sheetId": "sheet-001",
+      "name": "avin",
+      "signedInAt": "2025-06-25T20:17:53.896Z",
+      "className": "Intro to Computer Science"
+    },
+    {
+      "id": "1b800316-472b-4d85-ab89-d2512be3a3e9",
+      "sheetId": "sheet-001",
+      "name": "Avinaash",
+      "signedInAt": "2025-06-25T20:51:03.253Z",
+      "className": "Intro to Computer Science"
+    }
+  ]
+}

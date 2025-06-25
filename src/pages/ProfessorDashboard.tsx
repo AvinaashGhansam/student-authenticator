@@ -5,43 +5,60 @@ import { useState } from "react";
 import CustomButton from "../components/ui/CustomButton.tsx";
 import { useAuth } from "@clerk/clerk-react";
 import { toaster } from "../components/ui/toaster.tsx";
-
-const items = [
-  {
-    className: "Intro to Computer Science",
-    dateCreated: "2025-06-01",
-    reportId: "8b3a9f2a-3b4c-4d1f-a937-12a4567890ab",
-  },
-  {
-    className: "Calculus I",
-    dateCreated: "2025-06-02",
-    reportId: "c5f7d9b4-2d4e-4a3b-b876-90cde456abcd",
-  },
-  {
-    className: "English Literature",
-    dateCreated: "2025-06-03",
-    reportId: "9f6e8a1c-7c8b-4d5f-9a1b-23ef56789acd",
-  },
-  {
-    className: "Physics II",
-    dateCreated: "2025-06-04",
-    reportId: "e3b5c7f2-5d9a-4f2c-8b7d-34ab67890def",
-  },
-  {
-    className: "Modern World History",
-    dateCreated: "2025-06-05",
-    reportId: "b6e8d1f3-4c5b-4a2f-9e1a-45cd7890abcde",
-  },
-];
+import { useActiveSheet } from "../contexts/active-sheet-context.tsx";
+import { useSheets } from "../hooks/use-sheets.ts";
+import ActiveSheetView from "../components/ActiveSheetView.tsx";
+import { useNavigate } from "react-router-dom";
 
 const ProfessorDashboard = () => {
   const [showForm, setShowForm] = useState(false);
-  const { signOut /*isLoading*/ } = useAuth();
-  // TODO: implement loading
+  const { signOut } = useAuth();
+  const { setActiveSheet, activeSheet } = useActiveSheet();
+  const { sheets, addSheet, deleteSheet, updateSheet, loading } = useSheets();
+  const navigate = useNavigate();
+
+  const handleSheetCreated = async (
+    className: string,
+    dateCreated: string,
+    secretKey: string,
+  ) => {
+    const newSheetId = await addSheet({ className, dateCreated, secretKey });
+    setActiveSheet({ sheetId: newSheetId!, isActive: true, secretKey });
+    await updateSheet(newSheetId!, { isActive: true });
+    setShowForm(false);
+    toaster.create({
+      title: "Sheet created",
+      type: "success",
+      description: `Sheet ${newSheetId} is now active.`,
+    });
+  };
+
+  const handleActivate = async (sheetId: string, secretKey: string) => {
+    setActiveSheet({ sheetId, isActive: true, secretKey });
+    await updateSheet(sheetId, { isActive: true });
+    toaster.create({
+      title: "Sheet Activated",
+      description: `Sheet ${sheetId} is now active.`,
+      type: "success",
+    });
+  };
+
+  const handleDelete = async (sheetId: string) => {
+    await deleteSheet(sheetId);
+    toaster.create({
+      title: "Sheet Deleted",
+      description: `Sheet ${sheetId} has been deleted.`,
+      type: "success",
+    });
+  };
+
+  const handleViewLog = (sheetId: string) => {
+    navigate(`/sheet/${sheetId}/log`);
+  };
 
   const handleSignOut = async () => {
     try {
-      await signOut();
+      await signOut({ redirectUrl: "/" });
       toaster.create({
         title: "Signed out",
         type: "success",
@@ -57,9 +74,22 @@ const ProfessorDashboard = () => {
     }
   };
 
+  const handleCloseSheet = async () => {
+    if (activeSheet?.sheetId) {
+      await updateSheet(activeSheet.sheetId, { isActive: false });
+    }
+    setActiveSheet({ sheetId: "", isActive: false, secretKey: "" });
+    toaster.create({
+      title: "Sheet Closed",
+      type: "info",
+      description: "The active sheet has been closed.",
+    });
+  };
+
   return (
     <Box boxSize="md" w="100%">
       <Flex height="100vh" direction="column" p="4">
+        {/* Header */}
         <Flex
           as="header"
           width="100%"
@@ -92,19 +122,56 @@ const ProfessorDashboard = () => {
                   <Table.Row>
                     <Table.ColumnHeader>Class Name</Table.ColumnHeader>
                     <Table.ColumnHeader>Date Created</Table.ColumnHeader>
-                    <Table.ColumnHeader textAlign="end">
-                      Report Id
+                    <Table.ColumnHeader>Report ID</Table.ColumnHeader>
+                    <Table.ColumnHeader textAlign="center">
+                      Actions
                     </Table.ColumnHeader>
                   </Table.Row>
                 </Table.Header>
                 <Table.Body>
-                  {items.map((item) => (
-                    <Table.Row key={item.reportId}>
-                      <Table.Cell>{item.className}</Table.Cell>
-                      <Table.Cell>{item.dateCreated}</Table.Cell>
-                      <Table.Cell textAlign="end">{item.reportId}</Table.Cell>
+                  {loading ? (
+                    <Table.Row>
+                      <Table.Cell colSpan={4}>Loading...</Table.Cell>
                     </Table.Row>
-                  ))}
+                  ) : sheets.length === 0 ? (
+                    <Table.Row>
+                      <Table.Cell colSpan={4}>No sheets yet.</Table.Cell>
+                    </Table.Row>
+                  ) : (
+                    sheets.map((sheet) => (
+                      <Table.Row key={sheet.id} _hover={{ bg: "gray.50" }}>
+                        <Table.Cell>{sheet.className}</Table.Cell>
+                        <Table.Cell>{sheet.dateCreated}</Table.Cell>
+                        <Table.Cell>{sheet.reportId}</Table.Cell>
+                        <Table.Cell textAlign="center">
+                          <Flex gap="2" justify="center" flexWrap="wrap">
+                            <CustomButton
+                              title="Activate"
+                              size="sm"
+                              onClick={() =>
+                                handleActivate(sheet.id, sheet.secretKey!)
+                              }
+                              disabled={
+                                activeSheet?.sheetId === sheet.id &&
+                                activeSheet.isActive
+                              }
+                            />
+                            <CustomButton
+                              title="View Log"
+                              size="sm"
+                              onClick={() => handleViewLog(sheet.id)}
+                            />
+                            <CustomButton
+                              title="Delete"
+                              size="sm"
+                              bg="warning.900"
+                              onClick={() => handleDelete(sheet.id)}
+                            />
+                          </Flex>
+                        </Table.Cell>
+                      </Table.Row>
+                    ))
+                  )}
                 </Table.Body>
               </Table.Root>
             </Table.ScrollArea>
@@ -113,10 +180,17 @@ const ProfessorDashboard = () => {
               title="Create Sheet"
               onClick={() => setShowForm(true)}
             />
+
+            <ActiveSheetView onClose={handleCloseSheet} />
           </Flex>
 
           {/* Right side: Form */}
-          {showForm && <AttendanceForm onCancel={() => setShowForm(false)} />}
+          {showForm && (
+            <AttendanceForm
+              onSheetCreated={handleSheetCreated}
+              onCancel={() => setShowForm(false)}
+            />
+          )}
         </Flex>
       </Flex>
     </Box>

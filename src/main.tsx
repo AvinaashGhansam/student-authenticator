@@ -6,6 +6,7 @@ import { ChakraProvider } from "@chakra-ui/react";
 import { themeSystem } from "./theme.ts";
 import { ClerkProvider } from "@clerk/clerk-react";
 import { BrowserRouter } from "react-router-dom";
+import { ActiveSheetProvider } from "./contexts/active-sheet-context.tsx";
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
@@ -18,7 +19,9 @@ createRoot(document.getElementById("root")!).render(
     <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
       <BrowserRouter>
         <ChakraProvider value={themeSystem}>
-          <App />
+          <ActiveSheetProvider>
+            <App />
+          </ActiveSheetProvider>
         </ChakraProvider>
       </BrowserRouter>
     </ClerkProvider>

@@ -1,62 +1,83 @@
-import { Flex, Input } from "@chakra-ui/react";
-import { FormControl, FormLabel } from "@chakra-ui/form-control";
-import CustomButton from "./ui/CustomButton.tsx";
+import { Box, Flex, Heading, Input, Field } from "@chakra-ui/react";
+import CustomButton from "./ui/CustomButton";
 import { useState } from "react";
-import { randomSecret } from "../utils";
+import { BeatLoader } from "react-spinners";
 
-const AttendanceForm = ({ onCancel }: { onCancel: () => void }) => {
-  const [secret, setSecret] = useState("");
+type AttendanceFormProps = {
+  onSheetCreated: (
+    className: string,
+    dateCreated: string,
+    secretKey: string,
+  ) => void;
+  onCancel: () => void;
+};
+
+const AttendanceForm = ({ onSheetCreated, onCancel }: AttendanceFormProps) => {
+  const [form, setForm] = useState({
+    className: "",
+    date: "",
+    secretKey: "",
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async () => {
+    setIsSubmitting(true);
+    const newDate = form.date || new Date().toISOString().split("T")[0];
+    await onSheetCreated(form.className, newDate, form.secretKey);
+    setIsSubmitting(false);
+  };
+
   return (
-    <Flex
-      direction="column"
-      gap="4"
-      p="6"
-      border="1px solid"
-      borderColor="gray.300"
-      rounded="md"
+    <Box
+      borderWidth="1px"
+      borderRadius="md"
+      p="4"
+      width="400px"
       bg="white"
-      width="100%"
+      boxShadow="md"
     >
-      <FormControl isRequired>
-        <FormLabel>Course Title</FormLabel>
-        <Input placeholder="Enter course title" />
-      </FormControl>
+      <Heading size="md" mb="4" color="primary.900">
+        Create New Attendance Sheet
+      </Heading>
 
-      <FormControl isRequired>
-        <FormLabel>Date</FormLabel>
-        <Input type="date" />
-      </FormControl>
+      <Field.Root mb={4}>
+        <Field.Label>Course Title</Field.Label>
+        <Input
+          placeholder="Enter course title"
+          value={form.className}
+          onChange={(e) => setForm({ ...form, className: e.target.value })}
+        />
+      </Field.Root>
 
-      <FormControl isRequired>
-        <FormLabel>Secret Key</FormLabel>
+      <Field.Root mb={4}>
+        <Field.Label>Date</Field.Label>
+        <Input
+          type="date"
+          value={form.date}
+          onChange={(e) => setForm({ ...form, date: e.target.value })}
+        />
+      </Field.Root>
+
+      <Field.Root mb={4}>
+        <Field.Label>Secret Key</Field.Label>
         <Input
           placeholder="Enter secret key"
-          defaultValue={secret}
-          fontWeight="bold"
-          color="warning.900"
+          value={form.secretKey}
+          onChange={(e) => setForm({ ...form, secretKey: e.target.value })}
         />
-        <CustomButton
-          title="Generate Random Secret Key"
-          onClick={() => setSecret(randomSecret())}
-          mt="2"
-          bg="primary.400"
-        />
-      </FormControl>
-      <FormControl>
-        <FormLabel>Location Radius (Meters)</FormLabel>
-        <Input type="number" />
-      </FormControl>
-      <Flex justify="flex-end" gap="4" mt="4">
-        <CustomButton title="Cancel" bg="warning.900" onClick={onCancel} />
+      </Field.Root>
 
+      <Flex justify="flex-end" gap={4} mt={6}>
+        <CustomButton title="Cancel" bg="warning.900" onClick={onCancel} />
         <CustomButton
           title="Submit"
-          onClick={() => {
-            console.log("Submitted");
-          }}
+          onClick={handleSubmit}
+          loading={isSubmitting}
+          disabled={!form.className || !form.secretKey || isSubmitting}
+          spinner={<BeatLoader size={8} color="white" />}
         />
       </Flex>
-    </Flex>
+    </Box>
   );
 };
 
