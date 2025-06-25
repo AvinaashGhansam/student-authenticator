@@ -42,7 +42,10 @@ const AttendanceForm = ({ onCancel }: { onCancel: () => void }) => {
           bg="primary.400"
         />
       </FormControl>
-
+      <FormControl>
+        <FormLabel>Location Radius (Meters)</FormLabel>
+        <Input type="number" />
+      </FormControl>
       <Flex justify="flex-end" gap="4" mt="4">
         <CustomButton title="Cancel" bg="warning.900" onClick={onCancel} />
 
