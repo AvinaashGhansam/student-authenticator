@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, ReactNode } from "react";
+import { createContext, type ReactNode, useContext, useState } from "react";
 
 export type Professor = {
   id: string;
@@ -12,7 +12,9 @@ interface ProfessorContextType {
   setProfessor: (professor: Professor | null) => void;
 }
 
-const ProfessorContext = createContext<ProfessorContextType | undefined>(undefined);
+const ProfessorContext = createContext<ProfessorContextType | undefined>(
+  undefined,
+);
 
 export const ProfessorProvider = ({ children }: { children: ReactNode }) => {
   const [professor, setProfessor] = useState<Professor | null>(null);
@@ -31,4 +33,3 @@ export const useProfessor = () => {
   }
   return context;
 };
-

@@ -7,7 +7,10 @@
       "dateCreated": "2025-06-25",
       "secretKey": "abc123",
       "isActive": true,
-      "location": { "lat": "39.7074", "lng": "-75.1210" },
+      "location": {
+        "lat": "39.7074",
+        "lng": "-75.1210"
+      },
       "maxRadius": "100",
       "createdBy": "prof-001"
     },
@@ -18,7 +21,10 @@
       "dateCreated": "2025-06-27",
       "secretKey": "bio456",
       "isActive": false,
-      "location": { "lat": "39.7000", "lng": "-75.1200" },
+      "location": {
+        "lat": "39.7000",
+        "lng": "-75.1200"
+      },
       "maxRadius": "50",
       "createdBy": "prof-002"
     },
@@ -29,9 +35,40 @@
       "dateCreated": "2025-07-02",
       "secretKey": "math789",
       "isActive": true,
-      "location": { "lat": "39.7100", "lng": "-75.1250" },
+      "location": {
+        "lat": "39.7100",
+        "lng": "-75.1250"
+      },
       "maxRadius": "200",
       "createdBy": "prof-001"
+    },
+    {
+      "id": "430ee5d3-c1e3-417d-92d8-0ce55489510a",
+      "reportId": "RPT-14O4V",
+      "className": "test",
+      "dateCreated": "2025-07-02",
+      "secretKey": "abc",
+      "isActive": false,
+      "location": {
+        "lat": "39.99490200290869",
+        "lng": "-74.77301077334296"
+      },
+      "maxRadius": "10",
+      "createdBy": "user_2zJslCVwQ9UiE8ButAHJPqWwhmX"
+    },
+    {
+      "id": "7c58aa2e-4963-451e-92fa-7b9455b7454b",
+      "reportId": "RPT-4Y3JB",
+      "className": "Biology 101",
+      "dateCreated": "2025-07-02",
+      "secretKey": "abc",
+      "isActive": false,
+      "location": {
+        "lat": "39.99489997916136",
+        "lng": "-74.77302551433122"
+      },
+      "maxRadius": "10",
+      "createdBy": "user_2zKAnEZ9cv9X3v0Mt1cMxI1x3yy"
     }
   ],
   "logs": [
@@ -42,7 +79,10 @@
       "studentId": "S1001",
       "signedInAt": "2025-06-25T13:00:00Z",
       "className": "Intro to Computer Science",
-      "location": { "lat": 39.7075, "lng": -75.1211 },
+      "location": {
+        "lat": 39.7075,
+        "lng": -75.1211
+      },
       "locationDenied": false
     },
     {
@@ -52,7 +92,10 @@
       "studentId": "S1002",
       "signedInAt": "2025-06-25T13:05:00Z",
       "className": "Intro to Computer Science",
-      "location": { "lat": 39.7076, "lng": -75.1212 },
+      "location": {
+        "lat": 39.7076,
+        "lng": -75.1212
+      },
       "locationDenied": false
     },
     {
@@ -71,7 +114,10 @@
       "studentId": "S1004",
       "signedInAt": "2025-06-25T13:15:00Z",
       "className": "Intro to Computer Science",
-      "location": { "lat": 39.7200, "lng": -75.1300 },
+      "location": {
+        "lat": 39.72,
+        "lng": -75.13
+      },
       "locationDenied": false
     },
     {
@@ -81,7 +127,10 @@
       "studentId": "S2001",
       "signedInAt": "2025-06-27T09:00:00Z",
       "className": "Biology 101",
-      "location": { "lat": 39.7001, "lng": -75.1201 },
+      "location": {
+        "lat": 39.7001,
+        "lng": -75.1201
+      },
       "locationDenied": false
     },
     {
@@ -100,7 +149,10 @@
       "studentId": "S3001",
       "signedInAt": "2025-07-02T10:00:00Z",
       "className": "Math 101",
-      "location": { "lat": 39.7101, "lng": -75.1251 },
+      "location": {
+        "lat": 39.7101,
+        "lng": -75.1251
+      },
       "locationDenied": false
     },
     {
@@ -110,7 +162,10 @@
       "studentId": "S3002",
       "signedInAt": "2025-07-02T10:10:00Z",
       "className": "Math 101",
-      "location": { "lat": 39.7300, "lng": -75.1400 },
+      "location": {
+        "lat": 39.73,
+        "lng": -75.14
+      },
       "locationDenied": false
     },
     {
@@ -121,7 +176,43 @@
       "signedInAt": "2025-07-02T10:20:00Z",
       "className": "Math 101",
       "locationDenied": true
+    },
+    {
+      "id": "7689e28b-bf8e-4c91-a88f-828d525243fc",
+      "sheetId": "430ee5d3-c1e3-417d-92d8-0ce55489510a",
+      "name": "df fdsf",
+      "studentId": "21323",
+      "signedInAt": "2025-07-02T14:05:54.828Z",
+      "className": "test",
+      "location": {
+        "lat": 39.99491815939828,
+        "lng": -74.7730182054113
+      },
+      "locationDenied": false,
+      "fingerprint": "b532b7890c1f61cf2d75376d535876ab"
+    },
+    {
+      "id": "b9b770d8-751a-4c40-8476-1fb69faa3886",
+      "sheetId": "7c58aa2e-4963-451e-92fa-7b9455b7454b",
+      "name": "avin ghan",
+      "studentId": "123456",
+      "signedInAt": "2025-07-02T15:24:46.475Z",
+      "className": "Biology 101",
+      "location": {
+        "lat": 39.994907937943154,
+        "lng": -74.77303383793603
+      },
+      "locationDenied": false,
+      "fingerprint": "b532b7890c1f61cf2d75376d535876ab"
+    }
+  ],
+  "users": [
+    {
+      "id": "080e",
+      "email": "ghansa52@rowan.edu",
+      "firstName": "avinaash",
+      "lastName": "gh",
+      "university": "Rowan University"
     }
   ]
 }
-

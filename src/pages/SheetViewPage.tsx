@@ -2,11 +2,20 @@ import { Box, Button, Flex, Heading, Text } from "@chakra-ui/react";
 import { useNavigate, useParams } from "react-router-dom";
 import QRCode from "react-qr-code";
 import { useActiveSheet } from "../contexts/active-sheet-context";
+import { useAuth } from "@clerk/clerk-react";
+import { useEffect } from "react";
 
 const SheetViewPage = () => {
   const navigate = useNavigate();
   const { sheetId } = useParams();
   const { activeSheet } = useActiveSheet();
+  const { isSignedIn } = useAuth();
+
+  useEffect(() => {
+    if (!isSignedIn) {
+      navigate("/sign-in", { replace: true });
+    }
+  }, [isSignedIn, navigate]);
 
   const qrValue = `${window.location.origin}/student?sheet=${sheetId}`;
 

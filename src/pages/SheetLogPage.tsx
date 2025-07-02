@@ -1,3 +1,4 @@
+import { useAuth } from "@clerk/clerk-react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Box, Button, Flex, Heading, Spinner, Text } from "@chakra-ui/react";
@@ -18,6 +19,7 @@ interface LogEntry {
 }
 
 const SheetLogPage = () => {
+  const { isSignedIn } = useAuth();
   const { sheetId } = useParams();
   const navigate = useNavigate();
   const [logs, setLogs] = useState<LogEntry[]>([]);
@@ -26,11 +28,17 @@ const SheetLogPage = () => {
   const [error, setError] = useState(false);
 
   useEffect(() => {
+    if (!isSignedIn) {
+      navigate("/sign-in", { replace: true });
+    }
+  }, [isSignedIn, navigate]);
+
+  useEffect(() => {
     if (!sheetId) return;
     setLoading(true);
     Promise.all([
       axios.get<LogEntry[]>(`http://localhost:4000/logs?sheetId=${sheetId}`),
-      axios.get<Sheet>(`http://localhost:4000/sheets/${sheetId}`)
+      axios.get<Sheet>(`http://localhost:4000/sheets/${sheetId}`),
     ])
       .then(([logsRes, sheetRes]) => {
         setLogs(logsRes.data);
@@ -60,20 +68,29 @@ const SheetLogPage = () => {
         <Text fontSize="lg" color="red.500" mb="4">
           Failed to load student logs. Please try again later.
         </Text>
-        <CustomButton color="primary.900" title="Back to Dashboard" onClick={() => navigate("/professor-dashboard")}/>
+        <CustomButton
+          color="primary.900"
+          title="Back to Dashboard"
+          onClick={() => navigate("/professor-dashboard")}
+        />
       </Flex>
     );
   }
 
   // Helper to calculate distance between two lat/lng points in meters
   function getDistance(lat1: number, lng1: number, lat2: number, lng2: number) {
-    function toRad(x: number) { return x * Math.PI / 180; }
+    function toRad(x: number) {
+      return (x * Math.PI) / 180;
+    }
     const R = 6371000; // meters
     const dLat = toRad(lat2 - lat1);
     const dLng = toRad(lng2 - lng1);
-    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
-      Math.sin(dLng / 2) * Math.sin(dLng / 2);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(toRad(lat1)) *
+        Math.cos(toRad(lat2)) *
+        Math.sin(dLng / 2) *
+        Math.sin(dLng / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c;
   }
@@ -86,7 +103,7 @@ const SheetLogPage = () => {
       Number(sheet.location.lat),
       Number(sheet.location.lng),
       Number(log.location.lat),
-      Number(log.location.lng)
+      Number(log.location.lng),
     );
     return dist <= Number(sheet.maxRadius);
   }
@@ -105,14 +122,21 @@ const SheetLogPage = () => {
     <Box p="6">
       <Flex justify="space-between" align="center" mb="6">
         <Heading size="lg">Student Sign-In Log</Heading>
-        <Button onClick={() => navigate("/professor-dashboard")} colorScheme="blue">
+        <Button
+          onClick={() => navigate("/professor-dashboard")}
+          colorScheme="blue"
+        >
           Back to Dashboard
         </Button>
       </Flex>
       <Flex mb={4} gap={6} align="center">
         <Text fontWeight="bold">Total: {logs.length}</Text>
-        <Text color="green.600" fontWeight="bold">Verified: {verifiedCount}</Text>
-        <Text color="red.600" fontWeight="bold">Unverified: {unverifiedCount}</Text>
+        <Text color="green.600" fontWeight="bold">
+          Verified: {verifiedCount}
+        </Text>
+        <Text color="red.600" fontWeight="bold">
+          Unverified: {unverifiedCount}
+        </Text>
       </Flex>
       <Table.Root>
         <Table.Header>
@@ -146,9 +170,13 @@ const SheetLogPage = () => {
                   <Table.Cell>{lastName}</Table.Cell>
                   <Table.Cell>{firstName}</Table.Cell>
                   <Table.Cell>{entry.studentId || "-"}</Table.Cell>
-                  <Table.Cell>{new Date(entry.signedInAt).toLocaleString()}</Table.Cell>
+                  <Table.Cell>
+                    {new Date(entry.signedInAt).toLocaleString()}
+                  </Table.Cell>
                   <Table.Cell>{entry.className}</Table.Cell>
-                  <Table.Cell color={!verified ? "red.600" : "green.600"}>{status}</Table.Cell>
+                  <Table.Cell color={!verified ? "red.600" : "green.600"}>
+                    {status}
+                  </Table.Cell>
                 </Table.Row>
               );
             })

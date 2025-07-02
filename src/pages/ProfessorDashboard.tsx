@@ -1,7 +1,7 @@
 import { Box, Flex, Heading, Input, InputGroup, Table } from "@chakra-ui/react";
 import { LuSearch } from "react-icons/lu";
 import AttendanceForm from "../components/AttendanceForm.tsx";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import CustomButton from "../components/ui/CustomButton.tsx";
 import { useAuth, useUser } from "@clerk/clerk-react";
 import { toaster } from "../components/ui/toaster.tsx";
@@ -12,11 +12,17 @@ import { useNavigate } from "react-router-dom";
 
 const ProfessorDashboard = () => {
   const [showForm, setShowForm] = useState(false);
-  const { signOut } = useAuth();
+  const { signOut, isSignedIn } = useAuth();
   const { setActiveSheet, activeSheet } = useActiveSheet();
   const { sheets, addSheet, deleteSheet, updateSheet, loading } = useSheets();
   const { user } = useUser();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isSignedIn) {
+      navigate("/sign-in", { replace: true });
+    }
+  }, [isSignedIn, navigate]);
 
   const handleSheetCreated = async (
     className: string,
@@ -26,7 +32,14 @@ const ProfessorDashboard = () => {
     maxRadius: string,
   ) => {
     const createdBy = user?.id;
-    const newSheetId = await addSheet({ className, dateCreated, secretKey, location, maxRadius, createdBy });
+    const newSheetId = await addSheet({
+      className,
+      dateCreated,
+      secretKey,
+      location,
+      maxRadius,
+      createdBy,
+    });
     setActiveSheet({ sheetId: newSheetId!, isActive: true, secretKey });
     await updateSheet(newSheetId!, { isActive: true });
     setShowForm(false);
@@ -91,7 +104,9 @@ const ProfessorDashboard = () => {
   };
 
   // Filter sheets to only show those created by the current user
-  const visibleSheets = user ? sheets.filter(sheet => sheet.createdBy === user.id) : [];
+  const visibleSheets = user
+    ? sheets.filter((sheet) => sheet.createdBy === user.id)
+    : [];
 
   return (
     <Box boxSize="md" w="100%">
@@ -105,7 +120,11 @@ const ProfessorDashboard = () => {
           mb="4"
         >
           <Heading fontWeight="bold" color="primary.900">
-            Welcome, Professor John
+            Welcome, Professor
+            {" " +
+              user?.unsafeMetadata.firstName +
+              user?.unsafeMetadata.lastName}
+            !
           </Heading>
 
           <CustomButton

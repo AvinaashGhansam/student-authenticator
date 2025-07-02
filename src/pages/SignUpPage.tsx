@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Modal from "react-modal";
 import {
   Box,
@@ -8,23 +8,31 @@ import {
   Heading,
   Input,
   Text,
+  Button,
 } from "@chakra-ui/react";
 import CustomButton from "../components/ui/CustomButton.tsx";
-import { useSignUp } from "@clerk/clerk-react";
+import { useSignUp, useAuth } from "@clerk/clerk-react";
 import { useNavigate } from "react-router-dom";
 import { toaster } from "../components/ui/toaster.tsx";
 import { useClerk } from "@clerk/clerk-react";
 import EmailVerificationModal from "../components/EmailVerificationModal.tsx";
-import { EmailIcon, LockIcon, InfoIcon } from "@chakra-ui/icons";
+import { LockIcon, InfoIcon, EditIcon } from "@chakra-ui/icons";
+import { MdAlternateEmail } from "react-icons/md";
+import CustomModal from "../components/ui/CustomModal.tsx";
+import { saveUserToDb } from "../utils/userApi";
+import { InputGroup, InputLeftElement } from "@chakra-ui/input";
+import { LuSchool } from "react-icons/lu";
 
 Modal.setAppElement("#root");
 
 const SignUpPage = () => {
+  const { isSignedIn } = useAuth();
   const navigate = useNavigate();
   const { user } = useClerk();
   const { signUp, isLoaded, setActive } = useSignUp();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showVerificationModal, setShowVerificationModal] = useState(false);
+  const [isForgotOpen, setIsForgotOpen] = useState(false);
 
   const [verifyEmail, setVerifyEmail] = useState<{
     state: "default" | "pending" | "success";
@@ -39,6 +47,19 @@ const SignUpPage = () => {
   const [password, setPassword] = useState("");
   const [verifyPassword, setVerifyPassword] = useState("");
   const [university, setUniversity] = useState("");
+  const [forgotEmail, setForgotEmail] = useState("");
+  const [forgotStatus, setForgotStatus] = useState<
+    "idle" | "pending" | "success" | "error"
+  >("idle");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+
+  useEffect(() => {
+    if (isSignedIn === false) return;
+    if (isSignedIn) {
+      navigate("/professor-dashboard", { replace: true });
+    }
+  }, [isSignedIn, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -71,8 +92,10 @@ const SignUpPage = () => {
       await signUp.create({
         emailAddress: email,
         password,
-        unsafeMetadata: { university },
+        unsafeMetadata: { university, firstName, lastName },
       });
+      // Save user info to db.json
+      await saveUserToDb({ email, firstName, lastName, university });
       await signUp.prepareEmailAddressVerification({ strategy: "email_code" });
       setShowVerificationModal(true);
       toaster.create({
@@ -135,6 +158,28 @@ const SignUpPage = () => {
     }
   };
 
+  const handleForgotPassword = async () => {
+    setForgotStatus("pending");
+    try {
+      // Simulate API call
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      setForgotStatus("success");
+      toaster.create({
+        title: "Check your email",
+        description: "A password reset code has been sent to your email.",
+        type: "success",
+      });
+    } catch (error) {
+      console.error(error);
+      setForgotStatus("error");
+      toaster.create({
+        title: "Error",
+        description: "Failed to send reset code. Please try again.",
+        type: "error",
+      });
+    }
+  };
+
   return (
     <Flex minH="100vh" align="center" justify="center" bg="gray.50">
       <Container maxW="md" p={8} bg="white" borderRadius="lg" boxShadow="lg">
@@ -152,59 +197,198 @@ const SignUpPage = () => {
         <form onSubmit={handleSubmit}>
           <Field.Root mb={4}>
             <Field.Label>Email (.edu only)</Field.Label>
-            <Box display="flex" alignItems="center">
-              <EmailIcon color="gray.400" mr={2} />
+            <InputGroup>
+              <InputLeftElement
+                pointerEvents="none"
+                height="100%"
+                display="flex"
+                alignItems="center"
+                pl={2}
+              >
+                <MdAlternateEmail color="gray.400" size={12} />
+              </InputLeftElement>
               <Input
+                pl={10}
                 placeholder="Enter your .edu email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 type="email"
                 required
               />
-            </Box>
+            </InputGroup>
+          </Field.Root>
+          <Field.Root mb={4}>
+            <Field.Label>First Name</Field.Label>
+            <InputGroup>
+              <InputLeftElement
+                pointerEvents="none"
+                height="100%"
+                display="flex"
+                alignItems="center"
+                pl={2}
+              >
+                <EditIcon color="gray.400" boxSize={12} />
+              </InputLeftElement>
+              <Input
+                pl={10}
+                placeholder="Enter your first name"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                required
+              />
+            </InputGroup>
+          </Field.Root>
+          <Field.Root mb={4}>
+            <Field.Label>Last Name</Field.Label>
+            <InputGroup>
+              <InputLeftElement
+                pointerEvents="none"
+                height="100%"
+                display="flex"
+                alignItems="center"
+                pl={2}
+              >
+                <EditIcon color="gray.400" boxSize={12} />
+              </InputLeftElement>
+              <Input
+                pl={10}
+                placeholder="Enter your last name"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                required
+              />
+            </InputGroup>
+          </Field.Root>
+          <Field.Root mb={6}>
+            <Field.Label>University Name</Field.Label>
+            <InputGroup>
+              <InputLeftElement
+                pointerEvents="none"
+                height="100%"
+                display="flex"
+                alignItems="center"
+                pl={2}
+              >
+                <LuSchool color="gray.400" size={12} />
+              </InputLeftElement>
+              <Input
+                pl={10}
+                placeholder="Enter your university name"
+                value={university}
+                onChange={(e) => setUniversity(e.target.value)}
+                required
+              />
+            </InputGroup>
           </Field.Root>
           <Field.Root mb={4}>
             <Field.Label>Password</Field.Label>
-            <Box display="flex" alignItems="center">
-              <LockIcon color="gray.400" mr={2} />
+            <InputGroup>
+              <InputLeftElement
+                pointerEvents="none"
+                height="100%"
+                display="flex"
+                alignItems="center"
+                pl={2}
+              >
+                <LockIcon color="gray.400" boxSize={12} />
+              </InputLeftElement>
               <Input
+                pl={10}
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 type="password"
                 required
               />
-            </Box>
+            </InputGroup>
           </Field.Root>
-          <Field.Root mb={4}>
+          <Field.Root mb={6}>
             <Field.Label>Verify Password</Field.Label>
-            <Box display="flex" alignItems="center">
-              <LockIcon color="gray.400" mr={2} />
+            <InputGroup>
+              <InputLeftElement
+                pointerEvents="none"
+                height="100%"
+                display="flex"
+                alignItems="center"
+                pl={2}
+              >
+                <LockIcon color="gray.400" boxSize={12} />
+              </InputLeftElement>
               <Input
+                pl={10}
                 placeholder="Re-enter password"
                 value={verifyPassword}
                 onChange={(e) => setVerifyPassword(e.target.value)}
                 type="password"
                 required
               />
-            </Box>
-          </Field.Root>
-          <Field.Root mb={6}>
-            <Field.Label>University Name</Field.Label>
-            <Input
-              placeholder="Enter your university name"
-              value={university}
-              onChange={(e) => setUniversity(e.target.value)}
-              required
-            />
+            </InputGroup>
           </Field.Root>
           <CustomButton
             title="Sign Up"
             type="submit"
             loading={isSubmitting}
-            disabled={!email || !password || !verifyPassword || !university || isSubmitting}
+            disabled={
+              !email ||
+              !password ||
+              !verifyPassword ||
+              !firstName ||
+              !lastName ||
+              !university ||
+              isSubmitting
+            }
           />
         </form>
+        <Text
+          mt={4}
+          color="blue.500"
+          textAlign="center"
+          _hover={{ textDecoration: "underline", cursor: "pointer" }}
+          onClick={() => setIsForgotOpen(true)}
+        >
+          Forgot Password?
+        </Text>
+        <Text
+          mt={2}
+          color="blue.600"
+          fontSize="sm"
+          textAlign="center"
+          cursor="pointer"
+          onClick={() => navigate("/sign-in")}
+        >
+          Already have an account? Sign in here.
+        </Text>
+        <CustomModal
+          isOpen={isForgotOpen}
+          onClose={() => setIsForgotOpen(false)}
+          title="Forgot Password"
+          footer={
+            <Button
+              colorScheme="blue"
+              loading={forgotStatus === "pending"}
+              onClick={handleForgotPassword}
+              disabled={!forgotEmail || forgotStatus === "success"}
+            >
+              Send Code
+            </Button>
+          }
+        >
+          <Text mb={2}>Enter your email to receive a reset code.</Text>
+          <Input
+            placeholder="Enter your .edu email"
+            value={forgotEmail}
+            onChange={(e) => setForgotEmail(e.target.value)}
+            type="email"
+            mb={2}
+            disabled={forgotStatus === "success"}
+          />
+          {forgotStatus === "success" && (
+            <Text color="green.500">Code sent! Check your email.</Text>
+          )}
+          {forgotStatus === "error" && (
+            <Text color="red.500">Failed to send code. Try again.</Text>
+          )}
+        </CustomModal>
       </Container>
       <EmailVerificationModal
         isOpen={showVerificationModal}
