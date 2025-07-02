@@ -12,6 +12,7 @@ import { useSignIn } from "@clerk/clerk-react";
 import { useNavigate } from "react-router-dom";
 import CustomButton from "../components/ui/CustomButton.tsx";
 import { toaster } from "../components/ui/toaster.tsx";
+import studentImg from "../assets/student.jpeg";
 
 const SignInPage = () => {
   const { signIn, isLoaded } = useSignIn();
@@ -56,67 +57,72 @@ const SignInPage = () => {
   };
 
   return (
-    <Flex height="100vh" bg="background.primary">
-      <Flex flex="1" align="center" justify="center" p="8" direction="column">
-        <Image
-          src="src/assets/student.jpeg"
-          alt="Image of Students"
-          borderRadius="md"
-          height="500px"
-          width="600px"
-        />
-      </Flex>
-      <Flex
-        flex="1"
-        align="center"
-        justify="center"
-        p="8"
-        boxShadow="lg"
-        direction="column"
+    <Flex minH="100vh" align="center" justify="center" position="relative" bg="gray.50">
+      {/* Background Image */}
+      <Image
+        src={studentImg}
+        alt="Student"
+        objectFit="contain"
+        opacity={0.3}
+        position="absolute"
+        top={0}
+        left={0}
+        width="100%"
+        height="100%"
+        zIndex={0}
+      />
+      {/* Centered Form Popup */}
+      <Container
+        maxW="md"
+        p={8}
+        bg="whiteAlpha.900"
+        borderRadius="2xl"
+        boxShadow="2xl"
+        zIndex={1}
+        position="relative"
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
       >
-        <Heading mb="10" fontSize="5xl" color="primary.900" fontWeight="bold">
-          Attendance
+        <Heading size="lg" color="primary.900" mb={6} textAlign="center">
+          Instructor Sign In
         </Heading>
-        <Container maxW="md">
+        <form
+          style={{ width: "100%" }}
+          onSubmit={e => {
+            e.preventDefault();
+            handleSignIn();
+          }}
+        >
           <Field.Root mb={4}>
             <Field.Label>Email</Field.Label>
             <Input
-              placeholder="me@example.com"
+              placeholder="Enter your .edu email"
               value={email}
+              onChange={e => setEmail(e.target.value)}
+              type="email"
               required
-              onChange={(e) => setEmail(e.target.value)}
             />
           </Field.Root>
-
           <Field.Root mb={6}>
             <Field.Label>Password</Field.Label>
             <Input
-              placeholder="••••••••"
-              type="password"
+              placeholder="Password"
               value={password}
+              onChange={e => setPassword(e.target.value)}
+              type="password"
               required
-              onChange={(e) => setPassword(e.target.value)}
             />
           </Field.Root>
-
-          <CustomButton title="Sign In" onClick={handleSignIn} />
-
-          <Text
-            fontWeight="light"
-            color="text.secondary"
-            mt={2}
-            fontStyle="italic"
-          >
-            Don’t have an account?{" "}
-            <CustomButton
-              title="Sign Up"
-              bg="background.primary"
-              color="primary.900"
-              onClick={() => navigate("/signup")}
-            />
-          </Text>
-        </Container>
-      </Flex>
+          <CustomButton
+            title="Sign In"
+            type="submit"
+          />
+        </form>
+        <Text mt={6} color="gray.600" fontSize="sm" textAlign="center">
+          Only instructors can sign in here. Students should use the attendance link provided by their professor.
+        </Text>
+      </Container>
     </Flex>
   );
 };

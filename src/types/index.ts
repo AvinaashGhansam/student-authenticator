@@ -5,4 +5,7 @@ export type Sheet = {
   dateCreated: string;
   secretKey: string | null;
   isActive: boolean;
+  location?: { lat: string; lng: string };
+  maxRadius?: string;
+  createdBy?: string;
 };

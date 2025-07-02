@@ -3,7 +3,7 @@ import { LuSearch } from "react-icons/lu";
 import AttendanceForm from "../components/AttendanceForm.tsx";
 import { useState } from "react";
 import CustomButton from "../components/ui/CustomButton.tsx";
-import { useAuth } from "@clerk/clerk-react";
+import { useAuth, useUser } from "@clerk/clerk-react";
 import { toaster } from "../components/ui/toaster.tsx";
 import { useActiveSheet } from "../contexts/active-sheet-context.tsx";
 import { useSheets } from "../hooks/use-sheets.ts";
@@ -15,14 +15,18 @@ const ProfessorDashboard = () => {
   const { signOut } = useAuth();
   const { setActiveSheet, activeSheet } = useActiveSheet();
   const { sheets, addSheet, deleteSheet, updateSheet, loading } = useSheets();
+  const { user } = useUser();
   const navigate = useNavigate();
 
   const handleSheetCreated = async (
     className: string,
     dateCreated: string,
     secretKey: string,
+    location: { lat: string; lng: string },
+    maxRadius: string,
   ) => {
-    const newSheetId = await addSheet({ className, dateCreated, secretKey });
+    const createdBy = user?.id;
+    const newSheetId = await addSheet({ className, dateCreated, secretKey, location, maxRadius, createdBy });
     setActiveSheet({ sheetId: newSheetId!, isActive: true, secretKey });
     await updateSheet(newSheetId!, { isActive: true });
     setShowForm(false);
@@ -86,6 +90,9 @@ const ProfessorDashboard = () => {
     });
   };
 
+  // Filter sheets to only show those created by the current user
+  const visibleSheets = user ? sheets.filter(sheet => sheet.createdBy === user.id) : [];
+
   return (
     <Box boxSize="md" w="100%">
       <Flex height="100vh" direction="column" p="4">
@@ -133,12 +140,12 @@ const ProfessorDashboard = () => {
                     <Table.Row>
                       <Table.Cell colSpan={4}>Loading...</Table.Cell>
                     </Table.Row>
-                  ) : sheets.length === 0 ? (
+                  ) : visibleSheets.length === 0 ? (
                     <Table.Row>
                       <Table.Cell colSpan={4}>No sheets yet.</Table.Cell>
                     </Table.Row>
                   ) : (
-                    sheets.map((sheet) => (
+                    visibleSheets.map((sheet) => (
                       <Table.Row key={sheet.id} _hover={{ bg: "gray.50" }}>
                         <Table.Cell>{sheet.className}</Table.Cell>
                         <Table.Cell>{sheet.dateCreated}</Table.Cell>

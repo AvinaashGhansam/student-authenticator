@@ -6,30 +6,122 @@
       "className": "Intro to Computer Science",
       "dateCreated": "2025-06-25",
       "secretKey": "abc123",
-      "isActive": false
+      "isActive": true,
+      "location": { "lat": "39.7074", "lng": "-75.1210" },
+      "maxRadius": "100",
+      "createdBy": "prof-001"
+    },
+    {
+      "id": "sheet-002",
+      "reportId": "RPT-XYZ-002",
+      "className": "Biology 101",
+      "dateCreated": "2025-06-27",
+      "secretKey": "bio456",
+      "isActive": false,
+      "location": { "lat": "39.7000", "lng": "-75.1200" },
+      "maxRadius": "50",
+      "createdBy": "prof-002"
+    },
+    {
+      "id": "sheet-003",
+      "reportId": "RPT-MTH-003",
+      "className": "Math 101",
+      "dateCreated": "2025-07-02",
+      "secretKey": "math789",
+      "isActive": true,
+      "location": { "lat": "39.7100", "lng": "-75.1250" },
+      "maxRadius": "200",
+      "createdBy": "prof-001"
     }
   ],
   "logs": [
     {
-      "id": "student-004",
+      "id": "log-001",
       "sheetId": "sheet-001",
       "name": "Jane Doe",
+      "studentId": "S1001",
       "signedInAt": "2025-06-25T13:00:00Z",
-      "className": "Intro to Computer Science"
+      "className": "Intro to Computer Science",
+      "location": { "lat": 39.7075, "lng": -75.1211 },
+      "locationDenied": false
     },
     {
-      "id": "4866edd0-2e39-4eb5-b9d8-a9cd4e96e260",
+      "id": "log-002",
       "sheetId": "sheet-001",
-      "name": "avin",
-      "signedInAt": "2025-06-25T20:17:53.896Z",
-      "className": "Intro to Computer Science"
+      "name": "John Smith",
+      "studentId": "S1002",
+      "signedInAt": "2025-06-25T13:05:00Z",
+      "className": "Intro to Computer Science",
+      "location": { "lat": 39.7076, "lng": -75.1212 },
+      "locationDenied": false
     },
     {
-      "id": "1b800316-472b-4d85-ab89-d2512be3a3e9",
+      "id": "log-003",
       "sheetId": "sheet-001",
-      "name": "Avinaash",
-      "signedInAt": "2025-06-25T20:51:03.253Z",
-      "className": "Intro to Computer Science"
+      "name": "Alice Johnson",
+      "studentId": "S1003",
+      "signedInAt": "2025-06-25T13:10:00Z",
+      "className": "Intro to Computer Science",
+      "locationDenied": true
+    },
+    {
+      "id": "log-004",
+      "sheetId": "sheet-001",
+      "name": "Bob Lee",
+      "studentId": "S1004",
+      "signedInAt": "2025-06-25T13:15:00Z",
+      "className": "Intro to Computer Science",
+      "location": { "lat": 39.7200, "lng": -75.1300 },
+      "locationDenied": false
+    },
+    {
+      "id": "log-005",
+      "sheetId": "sheet-002",
+      "name": "Carol White",
+      "studentId": "S2001",
+      "signedInAt": "2025-06-27T09:00:00Z",
+      "className": "Biology 101",
+      "location": { "lat": 39.7001, "lng": -75.1201 },
+      "locationDenied": false
+    },
+    {
+      "id": "log-006",
+      "sheetId": "sheet-002",
+      "name": "David Black",
+      "studentId": "S2002",
+      "signedInAt": "2025-06-27T09:05:00Z",
+      "className": "Biology 101",
+      "locationDenied": true
+    },
+    {
+      "id": "log-007",
+      "sheetId": "sheet-003",
+      "name": "Eve Green",
+      "studentId": "S3001",
+      "signedInAt": "2025-07-02T10:00:00Z",
+      "className": "Math 101",
+      "location": { "lat": 39.7101, "lng": -75.1251 },
+      "locationDenied": false
+    },
+    {
+      "id": "log-008",
+      "sheetId": "sheet-003",
+      "name": "Frank Blue",
+      "studentId": "S3002",
+      "signedInAt": "2025-07-02T10:10:00Z",
+      "className": "Math 101",
+      "location": { "lat": 39.7300, "lng": -75.1400 },
+      "locationDenied": false
+    },
+    {
+      "id": "log-009",
+      "sheetId": "sheet-003",
+      "name": "Grace Red",
+      "studentId": "S3003",
+      "signedInAt": "2025-07-02T10:20:00Z",
+      "className": "Math 101",
+      "locationDenied": true
     }
   ]
 }
+

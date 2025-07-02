@@ -42,6 +42,9 @@ export const useSheets = () => {
         dateCreated: sheet.dateCreated,
         secretKey: sheet.secretKey,
         isActive: sheet.isActive ?? false,
+        location: sheet.location,
+        maxRadius: sheet.maxRadius,
+        createdBy: sheet.createdBy,
       };
 
       await axios.post(SHEETS_API, newSheet);
