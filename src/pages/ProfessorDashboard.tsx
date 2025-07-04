@@ -1,5 +1,4 @@
-import { Box, Flex, Heading, Input, InputGroup, Table } from "@chakra-ui/react";
-import { LuSearch } from "react-icons/lu";
+import { Box, Flex } from "@chakra-ui/react";
 import AttendanceForm from "../components/AttendanceForm.tsx";
 import { useState, useEffect } from "react";
 import CustomButton from "../components/ui/CustomButton.tsx";
@@ -9,9 +8,13 @@ import { useActiveSheet } from "../contexts/active-sheet-context.tsx";
 import { useSheets } from "../hooks/use-sheets.ts";
 import ActiveSheetView from "../components/ActiveSheetView.tsx";
 import { useNavigate } from "react-router-dom";
+import Header from "../components/professor/Header";
+import SearchBar from "../components/professor/SearchBar";
+import SheetsTable from "../components/professor/SheetsTable";
 
 const ProfessorDashboard = () => {
   const [showForm, setShowForm] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
   const { signOut, isSignedIn } = useAuth();
   const { setActiveSheet, activeSheet } = useActiveSheet();
   const { sheets, addSheet, deleteSheet, updateSheet, loading } = useSheets();
@@ -108,103 +111,33 @@ const ProfessorDashboard = () => {
     ? sheets.filter((sheet) => sheet.createdBy === user.id)
     : [];
 
+  // Filter by search term (class name)
+  const filteredSheets = visibleSheets.filter((sheet) =>
+    sheet.className.toLowerCase().includes(searchTerm.toLowerCase()),
+  );
+
   return (
     <Box boxSize="md" w="100%">
       <Flex height="100vh" direction="column" p="4">
         {/* Header */}
-        <Flex
-          as="header"
-          width="100%"
-          align="center"
-          justify="space-between"
-          mb="4"
-        >
-          <Heading fontWeight="bold" color="primary.900">
-            Welcome, Professor
-            {" " +
-              user?.unsafeMetadata.firstName +
-              user?.unsafeMetadata.lastName}
-            !
-          </Heading>
-
-          <CustomButton
-            onClick={handleSignOut}
-            title="Sign Out"
-            bg="warning.900"
-            display={{ base: "none", md: "inline-flex" }}
-          />
-        </Flex>
-
+        <Header user={user} onSignOut={handleSignOut} />
         <Flex flex="1" gap="8" p="4">
           {/* Left side: Table + Button */}
           <Flex direction="column" flex="1" gap="4">
-            <InputGroup startElement={<LuSearch />}>
-              <Input placeholder="Search by class name..." />
-            </InputGroup>
-
-            <Table.ScrollArea borderWidth="1px" rounded="md" height="300px">
-              <Table.Root size="lg" stickyHeader>
-                <Table.Header>
-                  <Table.Row>
-                    <Table.ColumnHeader>Class Name</Table.ColumnHeader>
-                    <Table.ColumnHeader>Date Created</Table.ColumnHeader>
-                    <Table.ColumnHeader>Report ID</Table.ColumnHeader>
-                    <Table.ColumnHeader textAlign="center">
-                      Actions
-                    </Table.ColumnHeader>
-                  </Table.Row>
-                </Table.Header>
-                <Table.Body>
-                  {loading ? (
-                    <Table.Row>
-                      <Table.Cell colSpan={4}>Loading...</Table.Cell>
-                    </Table.Row>
-                  ) : visibleSheets.length === 0 ? (
-                    <Table.Row>
-                      <Table.Cell colSpan={4}>No sheets yet.</Table.Cell>
-                    </Table.Row>
-                  ) : (
-                    visibleSheets.map((sheet) => (
-                      <Table.Row key={sheet.id} _hover={{ bg: "gray.50" }}>
-                        <Table.Cell>{sheet.className}</Table.Cell>
-                        <Table.Cell>{sheet.dateCreated}</Table.Cell>
-                        <Table.Cell>{sheet.reportId}</Table.Cell>
-                        <Table.Cell textAlign="center">
-                          <Flex gap="2" justify="center" flexWrap="wrap">
-                            <CustomButton
-                              title="Activate"
-                              size="sm"
-                              onClick={() =>
-                                handleActivate(sheet.id, sheet.secretKey!)
-                              }
-                              disabled={
-                                activeSheet?.sheetId === sheet.id &&
-                                activeSheet.isActive
-                              }
-                            />
-                            <CustomButton
-                              title="View Log"
-                              size="sm"
-                              onClick={() => handleViewLog(sheet.id)}
-                            />
-                            <CustomButton
-                              title="Delete"
-                              size="sm"
-                              bg="warning.900"
-                              onClick={() => handleDelete(sheet.id)}
-                            />
-                          </Flex>
-                        </Table.Cell>
-                      </Table.Row>
-                    ))
-                  )}
-                </Table.Body>
-              </Table.Root>
-            </Table.ScrollArea>
-
+            <SearchBar value={searchTerm} onChange={setSearchTerm} />
+            <SheetsTable
+              sheets={filteredSheets}
+              loading={loading}
+              activeSheet={activeSheet}
+              onActivate={handleActivate}
+              onViewLog={handleViewLog}
+              onDelete={handleDelete}
+            />
             <CustomButton
               title="Create Sheet"
               onClick={() => setShowForm(true)}
+              bgColor="primary.50"
+              color="primary.900"
             />
 
             <ActiveSheetView onClose={handleCloseSheet} />

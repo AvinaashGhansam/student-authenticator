@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { toaster } from "./ui/toaster.tsx";
+import type { Sheet } from "../types";
 
 type ActiveSheetViewProps = {
   onClose: () => void;
@@ -14,7 +15,7 @@ const SHEETS_API = "http://localhost:4000/sheets";
 
 const ActiveSheetView = ({ onClose }: ActiveSheetViewProps) => {
   const { activeSheet } = useActiveSheet();
-  const [sheetInfo, setSheetInfo] = useState<any>(null);
+  const [sheetInfo, setSheetInfo] = useState<Sheet | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {

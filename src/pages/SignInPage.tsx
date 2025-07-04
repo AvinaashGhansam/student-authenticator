@@ -13,7 +13,7 @@ import { useSignIn, useAuth } from "@clerk/clerk-react";
 import { useNavigate } from "react-router-dom";
 import CustomButton from "../components/ui/CustomButton.tsx";
 import { toaster } from "../components/ui/toaster.tsx";
-import studentImg from "../assets/student.jpeg";
+import logo from "../../public/logo.svg";
 import CustomModal from "../components/ui/CustomModal";
 
 const SignInPage = () => {
@@ -192,18 +192,18 @@ const SignInPage = () => {
       bg="gray.50"
     >
       {/* Background Image */}
-      <Image
-        src={studentImg}
-        alt="Student"
-        objectFit="contain"
-        opacity={0.3}
-        position="absolute"
-        top={0}
-        left={0}
-        width="100%"
-        height="100%"
-        zIndex={0}
-      />
+      {/*<Image*/}
+      {/*  src={studentImg}*/}
+      {/*  alt="Student"*/}
+      {/*  objectFit="contain"*/}
+      {/*  opacity={0.3}*/}
+      {/*  position="absolute"*/}
+      {/*  top={0}*/}
+      {/*  left={0}*/}
+      {/*  width="100%"*/}
+      {/*  height="100%"*/}
+      {/*  zIndex={0}*/}
+      {/*/>*/}
       {/* Centered Form Popup */}
       <Container
         maxW="md"
@@ -217,6 +217,17 @@ const SignInPage = () => {
         flexDirection="column"
         alignItems="center"
       >
+        <Image
+          src={logo}
+          alt="logo"
+          objectFit="contain"
+          opacity={0.3}
+          top={0}
+          left={0}
+          width="25%"
+          height="25%"
+          zIndex={0}
+        />
         <Heading size="lg" color="primary.900" mb={6} textAlign="center">
           Instructor Sign In
         </Heading>

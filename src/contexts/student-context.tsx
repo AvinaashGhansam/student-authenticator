@@ -4,7 +4,6 @@ export type Student = {
   id: string;
   name: string;
   email: string;
-  // Add more fields as needed
 };
 
 interface StudentContextType {
@@ -31,4 +30,3 @@ export const useStudent = () => {
   }
   return context;
 };
-

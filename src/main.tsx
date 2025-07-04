@@ -9,6 +9,7 @@ import { BrowserRouter } from "react-router-dom";
 import { ActiveSheetProvider } from "./contexts/active-sheet-context.tsx";
 import { ProfessorProvider } from "./contexts/professor-context";
 import { StudentProvider } from "./contexts/student-context";
+import BackgroundProvider from "./components/BackgroundProvider";
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
@@ -24,7 +25,9 @@ createRoot(document.getElementById("root")!).render(
           <ProfessorProvider>
             <StudentProvider>
               <ActiveSheetProvider>
-                <App />
+                <BackgroundProvider>
+                  <App />
+                </BackgroundProvider>
               </ActiveSheetProvider>
             </StudentProvider>
           </ProfessorProvider>

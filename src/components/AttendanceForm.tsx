@@ -42,19 +42,19 @@ const AttendanceForm = ({ onSheetCreated, onCancel }: AttendanceFormProps) => {
       () => {
         setLocationLoading(false);
         alert("Failed to get location. Please allow location access.");
-      }
+      },
     );
   };
 
   const handleSubmit = async () => {
     setIsSubmitting(true);
     const newDate = form.date || new Date().toISOString().split("T")[0];
-    await onSheetCreated(
+    onSheetCreated(
       form.className,
       newDate,
       form.secretKey,
       form.location,
-      form.maxRadius
+      form.maxRadius,
     );
     setIsSubmitting(false);
   };
@@ -111,16 +111,8 @@ const AttendanceForm = ({ onSheetCreated, onCancel }: AttendanceFormProps) => {
       <Field.Root mb={4}>
         <Field.Label>Location (lat, lng)</Field.Label>
         <Flex gap={2}>
-          <Input
-            placeholder="Latitude"
-            value={form.location.lat}
-            readOnly
-          />
-          <Input
-            placeholder="Longitude"
-            value={form.location.lng}
-            readOnly
-          />
+          <Input placeholder="Latitude" value={form.location.lat} readOnly />
+          <Input placeholder="Longitude" value={form.location.lng} readOnly />
           <CustomButton
             title={locationLoading ? "Getting..." : "Use My Location"}
             onClick={handleUseLocation}
@@ -136,7 +128,14 @@ const AttendanceForm = ({ onSheetCreated, onCancel }: AttendanceFormProps) => {
           title="Submit"
           onClick={handleSubmit}
           loading={isSubmitting}
-          disabled={!form.className || !form.secretKey || !form.maxRadius || !form.location.lat || !form.location.lng || isSubmitting}
+          disabled={
+            !form.className ||
+            !form.secretKey ||
+            !form.maxRadius ||
+            !form.location.lat ||
+            !form.location.lng ||
+            isSubmitting
+          }
           spinner={<BeatLoader size={8} color="white" />}
         />
       </Flex>

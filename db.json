@@ -69,6 +69,34 @@
       },
       "maxRadius": "10",
       "createdBy": "user_2zKAnEZ9cv9X3v0Mt1cMxI1x3yy"
+    },
+    {
+      "id": "8faf8686-95a3-4306-852c-11415d73fdca",
+      "reportId": "RPT-RI8ZA",
+      "className": "golf 101",
+      "dateCreated": "2025-07-03",
+      "secretKey": "abc",
+      "isActive": false,
+      "location": {
+        "lat": "39.99494105223672",
+        "lng": "-74.7729558237882"
+      },
+      "maxRadius": "10",
+      "createdBy": "user_2zKAnEZ9cv9X3v0Mt1cMxI1x3yy"
+    },
+    {
+      "id": "138ef2dd-7bf1-445a-9a9f-da3a640b575f",
+      "reportId": "RPT-49N5M",
+      "className": "sdgfsdg",
+      "dateCreated": "2025-07-03",
+      "secretKey": "sdf",
+      "isActive": true,
+      "location": {
+        "lat": "39.9948599294356",
+        "lng": "-74.7729483451995"
+      },
+      "maxRadius": "1",
+      "createdBy": "user_2zKAnEZ9cv9X3v0Mt1cMxI1x3yy"
     }
   ],
   "logs": [
@@ -201,6 +229,62 @@
       "location": {
         "lat": 39.994907937943154,
         "lng": -74.77303383793603
+      },
+      "locationDenied": false,
+      "fingerprint": "b532b7890c1f61cf2d75376d535876ab"
+    },
+    {
+      "id": "64fe9ccb-dd75-4122-b544-5accd6b7052b",
+      "sheetId": "138ef2dd-7bf1-445a-9a9f-da3a640b575f",
+      "name": "Avi Gha",
+      "studentId": "5465656",
+      "signedInAt": "2025-07-03T16:01:56.840Z",
+      "className": "sdgfsdg",
+      "location": {
+        "lat": 39.99487791953636,
+        "lng": -74.773037630137
+      },
+      "locationDenied": false,
+      "fingerprint": "b532b7890c1f61cf2d75376d535876ab"
+    },
+    {
+      "id": "983d53e6-b91d-4e03-ae52-e01aa1d804d7",
+      "sheetId": "138ef2dd-7bf1-445a-9a9f-da3a640b575f",
+      "name": "sds fdf",
+      "studentId": "23434",
+      "signedInAt": "2025-07-03T17:22:25.016Z",
+      "className": "sdgfsdg",
+      "location": {
+        "lat": 39.99475414244288,
+        "lng": -74.7728347254213
+      },
+      "locationDenied": false,
+      "fingerprint": "b532b7890c1f61cf2d75376d535876ab"
+    },
+    {
+      "id": "bcd55628-0b3f-46bf-842e-ad4009b9c1eb",
+      "sheetId": "8faf8686-95a3-4306-852c-11415d73fdca",
+      "name": "blank sam",
+      "studentId": "234343",
+      "signedInAt": "2025-07-03T17:39:19.704Z",
+      "className": "golf 101",
+      "location": {
+        "lat": 39.99491938108935,
+        "lng": -74.77301736096291
+      },
+      "locationDenied": false,
+      "fingerprint": "eb21778e34422dac48e90ab2b0a53b74"
+    },
+    {
+      "id": "4443357a-7adf-4c8f-b93a-26046547e063",
+      "sheetId": "7c58aa2e-4963-451e-92fa-7b9455b7454b",
+      "name": "avinaash ghansa",
+      "studentId": "1234",
+      "signedInAt": "2025-07-04T02:11:40.894Z",
+      "className": "Biology 101",
+      "location": {
+        "lat": 39.994863892534866,
+        "lng": -74.7729679162089
       },
       "locationDenied": false,
       "fingerprint": "b532b7890c1f61cf2d75376d535876ab"

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useAuth } from "@clerk/clerk-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import {
   Box,
@@ -9,7 +10,7 @@ import {
   Input,
   Spinner,
   Text,
-  Button
+  Button,
 } from "@chakra-ui/react";
 import {
   Modal,
@@ -18,18 +19,18 @@ import {
   ModalHeader,
   ModalBody,
   ModalFooter,
-
 } from "@chakra-ui/modal";
 import axios from "axios";
 import CustomButton from "../components/ui/CustomButton.tsx";
 import { toaster } from "../components/ui/toaster.tsx";
 import type { Sheet } from "../types";
-import FingerprintJS from '@fingerprintjs/fingerprintjs';
+import FingerprintJS from "@fingerprintjs/fingerprintjs";
 
 const SHEETS_API = "http://localhost:4000/sheets";
 const LOGS_API = "http://localhost:4000/logs";
 
 const StudentPage = () => {
+  const { isSignedIn } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const sheetIdFromUrl = searchParams.get("sheetId");
@@ -41,7 +42,7 @@ const StudentPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [hasSubmitted, setHasSubmitted] = useState(false);
   const [location, setLocation] = useState<{ lat: number; lng: number } | null>(
-    null
+    null,
   );
   const [locationDenied, setLocationDenied] = useState(false);
   const [locationChecked, setLocationChecked] = useState(false);
@@ -50,6 +51,10 @@ const StudentPage = () => {
   const [fingerprint, setFingerprint] = useState<string | null>(null);
 
   useEffect(() => {
+    if (isSignedIn) {
+      navigate("/signed-in-student", { replace: true });
+      return;
+    }
     if (sheetIdFromUrl) {
       axios
         .get(`${SHEETS_API}/${sheetIdFromUrl}`)
@@ -59,20 +64,15 @@ const StudentPage = () => {
           setSheet(data);
         })
         .catch(() => {
-          toaster.create({
-            title: "No active sheet",
-            description: "Please ask your professor to open a sheet.",
-            type: "warning",
-          });
-          navigate("/");
+          navigate("/signed-in-student", { replace: true });
         });
     }
-  }, [sheetIdFromUrl, navigate]);
+  }, [isSignedIn, sheetIdFromUrl, navigate]);
 
   // Generate fingerprint on mount
   useEffect(() => {
-    FingerprintJS.load().then(fp => {
-      fp.get().then(result => {
+    FingerprintJS.load().then((fp) => {
+      fp.get().then((result) => {
         setFingerprint(result.visitorId);
       });
     });
@@ -96,7 +96,7 @@ const StudentPage = () => {
         setLocationDenied(true);
         setLocationChecked(true);
         setShowLocationModal(false); // Close modal
-      }
+      },
     );
   };
 
@@ -136,11 +136,15 @@ const StudentPage = () => {
       return;
     }
     // Check for previous submission only here
-    if (localStorage.getItem(`attendance_${sheet.id}_${studentId}`) === "submitted") {
+    if (
+      localStorage.getItem(`attendance_${sheet.id}_${studentId}`) ===
+      "submitted"
+    ) {
       setHasSubmitted(true);
       toaster.create({
         title: "Already Submitted",
-        description: "You have already submitted your attendance for this class.",
+        description:
+          "You have already submitted your attendance for this class.",
         type: "info",
       });
       return;
@@ -200,15 +204,23 @@ const StudentPage = () => {
 
   return (
     <Box boxSize="md" w="100%">
-      <Modal isOpen={showLocationModal} onClose={() => { setShowLocationModal(false); setLocationChecked(false); }} isCentered motionPreset="none">
+      <Modal
+        isOpen={showLocationModal}
+        onClose={() => {
+          setShowLocationModal(false);
+          setLocationChecked(false);
+        }}
+        isCentered
+        motionPreset="none"
+      >
         <ModalOverlay bg="blackAlpha.700" />
         <ModalContent bg="white" color="black">
           <ModalHeader>Allow Location Access</ModalHeader>
           <ModalBody>
             <Text>
               To sign in, we need to verify your location. Please allow location
-              access. If you deny, you must see the professor to verify your sign
-              in.
+              access. If you deny, you must see the professor to verify your
+              sign in.
             </Text>
           </ModalBody>
           <ModalFooter>
@@ -261,24 +273,33 @@ const StudentPage = () => {
                     placeholder="First Name"
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
+                    bg="background.primary"
+                    color="text.primary"
+                    _placeholder={{ color: "text.secondary" }}
+                    borderColor="primary.400"
                   />
                   <Field.Label>Last Name</Field.Label>
                   <Input
                     placeholder="Last Name"
                     value={lastName}
                     onChange={(e) => setLastName(e.target.value)}
+                    bg="background.primary"
+                    color="text.primary"
+                    _placeholder={{ color: "text.secondary" }}
+                    borderColor="primary.400"
                   />
-                  <Field.Label>Student Id</Field.Label>
+                  <Field.Label color="text.primary">Student Id</Field.Label>
                   <Input
                     placeholder="Your name"
                     value={studentId}
                     onChange={(e) => setStudentId(e.target.value)}
+                    bg="background.primary"
+                    color="text.primary"
+                    _placeholder={{ color: "text.secondary" }}
+                    borderColor="primary.400"
                   />
 
-                  <Field.Label
-                    color="warning.900"
-                    fontWeight="bold"
-                  >
+                  <Field.Label color="warning.900" fontWeight="bold">
                     Secret Key (ask professor)
                   </Field.Label>
                   <Input
@@ -286,6 +307,9 @@ const StudentPage = () => {
                     value={secretKeyInput}
                     color="warning.900"
                     onChange={(e) => setSecretKeyInput(e.target.value)}
+                    bg="background.primary"
+                    _placeholder={{ color: "text.secondary" }}
+                    borderColor="primary.400"
                   />
                 </Field.Root>
               )}
