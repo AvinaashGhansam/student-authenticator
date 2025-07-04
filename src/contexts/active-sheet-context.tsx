@@ -1,9 +1,9 @@
 import { createContext, type ReactNode, useContext, useState } from "react";
 
-type ActiveSheet = {
-  sheetId: string | null;
+export type ActiveSheet = {
+  sheetId: string;
   isActive: boolean;
-  secretKey: string | null;
+  secretKey: string;
   //TODO:  add: courseTitle, createdAt, expiresAt, etc.
 };
 

@@ -136,6 +136,7 @@ const ProfessorDashboard = () => {
             <CustomButton
               title="Create Sheet"
               onClick={() => setShowForm(true)}
+              _hover={{ bg: "text.secondary" }}
               bgColor="primary.50"
               color="primary.900"
             />

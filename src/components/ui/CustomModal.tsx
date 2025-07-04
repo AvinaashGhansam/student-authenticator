@@ -28,7 +28,12 @@ const CustomModal: React.FC<CustomModalProps> = ({
           margin: "auto",
           borderRadius: 16,
           padding: 24,
-          inset: 0,
+          top: "50%",
+          left: "50%",
+          right: "auto",
+          bottom: "auto",
+          transform: "translate(-50%, -50%)",
+          height: "auto",
         },
       }}
       ariaHideApp={false}

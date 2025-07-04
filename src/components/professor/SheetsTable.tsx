@@ -1,8 +1,9 @@
 import { Table, Flex } from "@chakra-ui/react";
 import CustomButton from "../ui/CustomButton";
 import type { Sheet } from "../../types";
+
 import type { ActiveSheet } from "../../contexts/active-sheet-context";
-import React from "react";
+import type { FC } from "react";
 
 interface SheetsTableProps {
   sheets: Sheet[];
@@ -13,7 +14,7 @@ interface SheetsTableProps {
   onDelete: (sheetId: string) => void;
 }
 
-const SheetsTable: React.FC<SheetsTableProps> = ({
+const SheetsTable: FC<SheetsTableProps> = ({
   sheets,
   loading,
   activeSheet,
@@ -58,6 +59,7 @@ const SheetsTable: React.FC<SheetsTableProps> = ({
                   <CustomButton
                     title="Activate"
                     size="sm"
+                    _hover={{ bg: "primary.800" }}
                     onClick={() => onActivate(sheet.id, sheet.secretKey!)}
                     disabled={
                       activeSheet?.sheetId === sheet.id && activeSheet?.isActive
@@ -66,11 +68,13 @@ const SheetsTable: React.FC<SheetsTableProps> = ({
                   <CustomButton
                     title="View Log"
                     size="sm"
+                    _hover={{ bg: "primary.800" }}
                     onClick={() => onViewLog(sheet.id)}
                   />
                   <CustomButton
                     title="Delete"
                     size="sm"
+                    _hover={{ bg: "warning.850" }}
                     bg="warning.900"
                     onClick={() => onDelete(sheet.id)}
                   />

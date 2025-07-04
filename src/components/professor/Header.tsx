@@ -16,6 +16,7 @@ const Header: React.FC<HeaderProps> = ({ user, onSignOut }) => (
       onClick={onSignOut}
       title="Sign Out"
       bg="warning.900"
+      _hover={{ bg: "warning.850" }}
       display={{ base: "none", md: "inline-flex" }}
     />
   </Flex>

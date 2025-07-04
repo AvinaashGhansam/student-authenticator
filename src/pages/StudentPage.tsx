@@ -12,19 +12,12 @@ import {
   Text,
   Button,
 } from "@chakra-ui/react";
-import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-} from "@chakra-ui/modal";
 import axios from "axios";
 import CustomButton from "../components/ui/CustomButton.tsx";
 import { toaster } from "../components/ui/toaster.tsx";
 import type { Sheet } from "../types";
 import FingerprintJS from "@fingerprintjs/fingerprintjs";
+import LocationModal from "../components/LocationModal";
 
 const SHEETS_API = "http://localhost:4000/sheets";
 const LOGS_API = "http://localhost:4000/logs";
@@ -47,11 +40,11 @@ const StudentPage = () => {
   const [locationDenied, setLocationDenied] = useState(false);
   const [locationChecked, setLocationChecked] = useState(false);
   const [showLocationModal, setShowLocationModal] = useState(false);
-  const [pendingSubmit, setPendingSubmit] = useState(false);
   const [fingerprint, setFingerprint] = useState<string | null>(null);
 
   useEffect(() => {
-    if (isSignedIn) {
+    // Only redirect if signed in AND not accessing via QR code (no sheetId)
+    if (isSignedIn && !sheetIdFromUrl) {
       navigate("/signed-in-student", { replace: true });
       return;
     }
@@ -102,19 +95,34 @@ const StudentPage = () => {
 
   const handlePreSubmit = () => {
     setShowLocationModal(true);
-    setPendingSubmit(true);
   };
 
   // When location is checked, actually submit
   useEffect(() => {
-    if (pendingSubmit && locationChecked) {
+    if (showLocationModal === false && locationChecked) {
       handleSubmit();
-      setPendingSubmit(false);
+      setLocationChecked(false);
     }
-    // eslint-disable-next-line
-  }, [pendingSubmit, locationChecked]);
+  }, [showLocationModal, locationChecked]);
 
   const handleSubmit = async () => {
+    // Validate fields after location is checked
+    if (!firstName || !lastName || !studentId || !secretKeyInput) {
+      toaster.create({
+        title: "Missing Fields",
+        description: "Please fill in all fields.",
+        type: "error",
+      });
+      return;
+    }
+    if (secretKeyInput.trim() !== sheet?.secretKey) {
+      toaster.create({
+        title: "Invalid secret key",
+        description: "Please check the key provided by your professor.",
+        type: "error",
+      });
+      return;
+    }
     if (!sheet) return;
     if (locationDenied) {
       toaster.create({
@@ -125,14 +133,6 @@ const StudentPage = () => {
       });
       // Store denial in localStorage for later reference
       localStorage.setItem(`locationDenied_${sheet.id}_${studentId}`, "true");
-      return;
-    }
-    if (secretKeyInput.trim() !== sheet.secretKey) {
-      toaster.create({
-        title: "Invalid secret key",
-        description: "Please check the key provided by your professor.",
-        type: "error",
-      });
       return;
     }
     // Check for previous submission only here
@@ -204,42 +204,19 @@ const StudentPage = () => {
 
   return (
     <Box boxSize="md" w="100%">
-      <Modal
+      <LocationModal
         isOpen={showLocationModal}
+        onAllow={handleRequestLocation}
+        onDeny={() => {
+          setLocationDenied(true);
+          setLocationChecked(true);
+          setShowLocationModal(false);
+        }}
         onClose={() => {
           setShowLocationModal(false);
           setLocationChecked(false);
         }}
-        isCentered
-        motionPreset="none"
-      >
-        <ModalOverlay bg="blackAlpha.700" />
-        <ModalContent bg="white" color="black">
-          <ModalHeader>Allow Location Access</ModalHeader>
-          <ModalBody>
-            <Text>
-              To sign in, we need to verify your location. Please allow location
-              access. If you deny, you must see the professor to verify your
-              sign in.
-            </Text>
-          </ModalBody>
-          <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={handleRequestLocation}>
-              Allow
-            </Button>
-            <Button
-              variant="ghost"
-              onClick={() => {
-                setLocationDenied(true);
-                setLocationChecked(true);
-                setShowLocationModal(false);
-              }}
-            >
-              Deny
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+      />
       <Flex height="100vh" direction="column" p="4">
         <Heading
           display="flex"
