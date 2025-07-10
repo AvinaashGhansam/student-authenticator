@@ -1,5 +1,5 @@
 export type Sheet = {
-  id: string;
+  _id: string;
   reportId: string | null;
   className: string;
   dateCreated: string;

@@ -8,7 +8,7 @@ import CustomButton from "../components/ui/CustomButton.tsx";
 import type { Sheet } from "../types";
 
 interface LogEntry {
-  id: string;
+  _id: string;
   name: string;
   signedInAt: string;
   sheetId: string;
@@ -37,8 +37,10 @@ const SheetLogPage = () => {
     if (!sheetId) return;
     setLoading(true);
     Promise.all([
-      axios.get<LogEntry[]>(`http://localhost:4000/logs?sheetId=${sheetId}`),
-      axios.get<Sheet>(`http://localhost:4000/sheets/${sheetId}`),
+      axios.get<LogEntry[]>(
+        `http://localhost:3000/api/v1/logs?sheetId=${sheetId}`,
+      ),
+      axios.get<Sheet>(`http://localhost:3000/api/v1/sheets/${sheetId}`),
     ])
       .then(([logsRes, sheetRes]) => {
         setLogs(logsRes.data);
@@ -166,7 +168,10 @@ const SheetLogPage = () => {
               if (entry.locationDenied) status = "Location Not Shared";
               else if (!verified) status = "Out of Bounds";
               return (
-                <Table.Row key={entry.id} bg={!verified ? "red.50" : undefined}>
+                <Table.Row
+                  key={entry._id}
+                  bg={!verified ? "red.50" : undefined}
+                >
                   <Table.Cell>{lastName}</Table.Cell>
                   <Table.Cell>{firstName}</Table.Cell>
                   <Table.Cell>{entry.studentId || "-"}</Table.Cell>

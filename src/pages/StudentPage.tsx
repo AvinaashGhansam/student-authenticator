@@ -1,26 +1,18 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@clerk/clerk-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import {
-  Box,
-  Container,
-  Field,
-  Flex,
-  Heading,
-  Input,
-  Spinner,
-  Text,
-  Button,
-} from "@chakra-ui/react";
+import { Box, Flex, Heading, Image } from "@chakra-ui/react";
 import axios from "axios";
-import CustomButton from "../components/ui/CustomButton.tsx";
 import { toaster } from "../components/ui/toaster.tsx";
 import type { Sheet } from "../types";
 import FingerprintJS from "@fingerprintjs/fingerprintjs";
 import LocationModal from "../components/LocationModal";
+import StudentSignInForm from "../components/student/StudentSignInForm";
+import AttendanceSubmitted from "../components/student/AttendanceSubmitted";
+import LoadingSheet from "../components/student/LoadingSheet";
 
-const SHEETS_API = "http://localhost:4000/sheets";
-const LOGS_API = "http://localhost:4000/logs";
+const SHEETS_API = "http://localhost:3000/api/v1/sheets";
+const LOGS_API = "http://localhost:3000/api/v1/logs";
 
 const StudentPage = () => {
   const { isSignedIn } = useAuth();
@@ -132,12 +124,12 @@ const StudentPage = () => {
         type: "warning",
       });
       // Store denial in localStorage for later reference
-      localStorage.setItem(`locationDenied_${sheet.id}_${studentId}`, "true");
+      localStorage.setItem(`locationDenied_${sheet._id}_${studentId}`, "true");
       return;
     }
     // Check for previous submission only here
     if (
-      localStorage.getItem(`attendance_${sheet.id}_${studentId}`) ===
+      localStorage.getItem(`attendance_${sheet._id}_${studentId}`) ===
       "submitted"
     ) {
       setHasSubmitted(true);
@@ -152,7 +144,7 @@ const StudentPage = () => {
     setIsSubmitting(true);
     try {
       await axios.post(LOGS_API, {
-        sheetId: sheet.id,
+        sheetId: sheet._id,
         id: crypto.randomUUID(),
         name: `${firstName} ${lastName}`.trim(),
         studentId: studentId,
@@ -162,7 +154,7 @@ const StudentPage = () => {
         locationDenied: locationDenied,
         fingerprint: fingerprint,
       });
-      localStorage.setItem(`attendance_${sheet.id}_${studentId}`, "submitted");
+      localStorage.setItem(`attendance_${sheet._id}_${studentId}`, "submitted");
       setHasSubmitted(true);
       toaster.create({
         title: "Submitted",
@@ -186,129 +178,76 @@ const StudentPage = () => {
   };
 
   if (!sheet) {
-    return (
-      <Flex
-        height="100vh"
-        align="center"
-        justify="center"
-        direction="column"
-        p="6"
-      >
-        <Spinner size="xl" />
-        <Text mt="4" color="gray.600">
-          Loading sheet...
-        </Text>
-      </Flex>
-    );
+    return <LoadingSheet />;
   }
 
+  const handleFormChange = (field: string, value: string) => {
+    if (field === "firstName") setFirstName(value);
+    else if (field === "lastName") setLastName(value);
+    else if (field === "studentId") setStudentId(value);
+    else if (field === "secretKeyInput") setSecretKeyInput(value);
+  };
+
   return (
-    <Box boxSize="md" w="100%">
-      <LocationModal
-        isOpen={showLocationModal}
-        onAllow={handleRequestLocation}
-        onDeny={() => {
-          setLocationDenied(true);
-          setLocationChecked(true);
-          setShowLocationModal(false);
-        }}
-        onClose={() => {
-          setShowLocationModal(false);
-          setLocationChecked(false);
-        }}
-      />
-      <Flex height="100vh" direction="column" p="4">
-        <Heading
-          display="flex"
-          fontWeight="bold"
-          color="primary.900"
-          mb={4}
-          justifyContent="center"
-          alignItems="center"
-          fontSize="2xl"
-        >
-          Student Sign In
-        </Heading>
-
-        <Flex flex="1" gap="8" p="4" direction={{ base: "column", md: "row" }}>
-          {/* Form */}
-          <Flex flex="1" direction="column" gap="4">
-            <Container maxW="md">
-              {hasSubmitted ? (
-                <Box p={6} textAlign="center" bg="green.50" borderRadius="md">
-                  <Heading size="md" color="green.700" mb={2}>
-                    Attendance Submitted
-                  </Heading>
-                  <Text color="green.700">
-                    You have already submitted your attendance for this class.
-                  </Text>
-                </Box>
-              ) : (
-                <Field.Root mb={4}>
-                  <Field.Label>First Name</Field.Label>
-                  <Input
-                    placeholder="First Name"
-                    value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
-                    bg="background.primary"
-                    color="text.primary"
-                    _placeholder={{ color: "text.secondary" }}
-                    borderColor="primary.400"
-                  />
-                  <Field.Label>Last Name</Field.Label>
-                  <Input
-                    placeholder="Last Name"
-                    value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
-                    bg="background.primary"
-                    color="text.primary"
-                    _placeholder={{ color: "text.secondary" }}
-                    borderColor="primary.400"
-                  />
-                  <Field.Label color="text.primary">Student Id</Field.Label>
-                  <Input
-                    placeholder="Your name"
-                    value={studentId}
-                    onChange={(e) => setStudentId(e.target.value)}
-                    bg="background.primary"
-                    color="text.primary"
-                    _placeholder={{ color: "text.secondary" }}
-                    borderColor="primary.400"
-                  />
-
-                  <Field.Label color="warning.900" fontWeight="bold">
-                    Secret Key (ask professor)
-                  </Field.Label>
-                  <Input
-                    placeholder="Enter secret key"
-                    value={secretKeyInput}
-                    color="warning.900"
-                    onChange={(e) => setSecretKeyInput(e.target.value)}
-                    bg="background.primary"
-                    _placeholder={{ color: "text.secondary" }}
-                    borderColor="primary.400"
-                  />
-                </Field.Root>
-              )}
-              {!hasSubmitted && (
-                <CustomButton
-                  title="Submit"
-                  onClick={handlePreSubmit}
-                  disabled={
-                    !firstName ||
-                    !lastName ||
-                    !studentId ||
-                    !secretKeyInput ||
-                    isSubmitting
-                  }
-                  loading={isSubmitting}
-                />
-              )}
-            </Container>
+    <Flex
+      minH="100vh"
+      align="center"
+      justify="center"
+      bgGradient="linear(to-br, background.primary 60%, primary.100 100%)"
+      p={{ base: 2, md: 8 }}
+    >
+      <Box
+        w={{ base: "100%", sm: "90%", md: "480px" }}
+        bg="whiteAlpha.900"
+        borderRadius="2xl"
+        boxShadow="2xl"
+        p={{ base: 4, md: 8 }}
+        position="relative"
+      >
+        <Flex direction="column" align="center" mb={6}>
+          <Image src="/logo.svg" alt="Logo" boxSize="64px" mb={2} />
+          <Heading
+            fontWeight="bold"
+            color="primary.900"
+            fontSize="2xl"
+            textAlign="center"
+            mb={2}
+          >
+            Student Sign In
+          </Heading>
+        </Flex>
+        <LocationModal
+          isOpen={showLocationModal}
+          onAllow={handleRequestLocation}
+          onDeny={() => {
+            setLocationDenied(true);
+            setLocationChecked(true);
+            setShowLocationModal(false);
+          }}
+          onClose={() => {
+            setShowLocationModal(false);
+            setLocationChecked(false);
+          }}
+        />
+        <Flex direction="column" gap="8">
+          <Flex direction="column" gap="4">
+            {hasSubmitted ? (
+              <AttendanceSubmitted />
+            ) : (
+              <StudentSignInForm
+                firstName={firstName}
+                lastName={lastName}
+                studentId={studentId}
+                secretKeyInput={secretKeyInput}
+                isSubmitting={isSubmitting}
+                onChange={handleFormChange}
+                onSubmit={handlePreSubmit}
+              />
+            )}
           </Flex>
         </Flex>
-      </Flex>
-    </Box>
+      </Box>
+    </Flex>
   );
 };
 

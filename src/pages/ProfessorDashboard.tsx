@@ -1,4 +1,4 @@
-import { Box, Flex } from "@chakra-ui/react";
+import { Box, Flex, Image, Heading } from "@chakra-ui/react";
 import AttendanceForm from "../components/AttendanceForm.tsx";
 import { useState, useEffect } from "react";
 import CustomButton from "../components/ui/CustomButton.tsx";
@@ -108,7 +108,7 @@ const ProfessorDashboard = () => {
 
   // Filter sheets to only show those created by the current user
   const visibleSheets = user
-    ? sheets.filter((sheet) => sheet.createdBy === user.id)
+    ? sheets.filter((sheet) => sheet.createdBy === user?.id)
     : [];
 
   // Filter by search term (class name)
@@ -117,43 +117,70 @@ const ProfessorDashboard = () => {
   );
 
   return (
-    <Box boxSize="md" w="100%">
-      <Flex height="100vh" direction="column" p="4">
-        {/* Header */}
-        <Header user={user} onSignOut={handleSignOut} />
-        <Flex flex="1" gap="8" p="4">
-          {/* Left side: Table + Button */}
-          <Flex direction="column" flex="1" gap="4">
-            <SearchBar value={searchTerm} onChange={setSearchTerm} />
-            <SheetsTable
-              sheets={filteredSheets}
-              loading={loading}
-              activeSheet={activeSheet}
-              onActivate={handleActivate}
-              onViewLog={handleViewLog}
-              onDelete={handleDelete}
-            />
-            <CustomButton
-              title="Create Sheet"
-              onClick={() => setShowForm(true)}
-              _hover={{ bg: "text.secondary" }}
-              bgColor="primary.50"
-              color="primary.900"
-            />
-
-            <ActiveSheetView onClose={handleCloseSheet} />
-          </Flex>
-
-          {/* Right side: Form */}
-          {showForm && (
-            <AttendanceForm
-              onSheetCreated={handleSheetCreated}
-              onCancel={() => setShowForm(false)}
-            />
-          )}
+    <Flex
+      minH="100vh"
+      align="center"
+      justify="center"
+      bgGradient="linear(to-br, background.primary 60%, primary.100 100%)"
+      p={{ base: 2, md: 8 }}
+    >
+      <Box
+        w={{ base: "100%", sm: "90%", md: "1100px" }}
+        bg="whiteAlpha.900"
+        borderRadius="2xl"
+        boxShadow="2xl"
+        p={{ base: 4, md: 8 }}
+        position="relative"
+      >
+        <Flex direction="column" align="center" mb={6}>
+          <Image src="/logo.svg" alt="Logo" boxSize="64px" mb={2} />
+          <Heading
+            fontWeight="bold"
+            color="primary.900"
+            fontSize="2xl"
+            textAlign="center"
+            mb={2}
+          >
+            Professor Dashboard
+          </Heading>
         </Flex>
-      </Flex>
-    </Box>
+        <Flex height="100%" direction="column" p="4">
+          {/* Header */}
+          <Header user={user} onSignOut={handleSignOut} />
+          <Flex flex="1" gap="8" p="4">
+            {/* Left side: Table + Button */}
+            <Flex direction="column" flex="1" gap="4">
+              <SearchBar value={searchTerm} onChange={setSearchTerm} />
+              <SheetsTable
+                sheets={filteredSheets}
+                loading={loading}
+                activeSheet={activeSheet}
+                onActivate={handleActivate}
+                onViewLog={handleViewLog}
+                onDelete={handleDelete}
+              />
+              <CustomButton
+                title="Create Sheet"
+                onClick={() => setShowForm(true)}
+                _hover={{ bg: "text.secondary" }}
+                bgColor="primary.50"
+                color="primary.900"
+              />
+            </Flex>
+            {/* Right side: Active Sheet View & Attendance Form */}
+            <Flex direction="column" flex="1" gap="4">
+              <ActiveSheetView onClose={handleCloseSheet} />
+              {showForm && (
+                <AttendanceForm
+                  onCancel={() => setShowForm(false)}
+                  onSheetCreated={handleSheetCreated}
+                />
+              )}
+            </Flex>
+          </Flex>
+        </Flex>
+      </Box>
+    </Flex>
   );
 };
 

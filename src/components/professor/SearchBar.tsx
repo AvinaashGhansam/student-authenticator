@@ -1,5 +1,6 @@
 import { Input, InputGroup } from "@chakra-ui/react";
 import { LuSearch } from "react-icons/lu";
+import React from "react";
 
 interface SearchBarProps {
   value: string;

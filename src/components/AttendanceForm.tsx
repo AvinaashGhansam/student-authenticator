@@ -62,13 +62,14 @@ const AttendanceForm = ({ onSheetCreated, onCancel }: AttendanceFormProps) => {
   return (
     <Box
       borderWidth="1px"
-      borderRadius="md"
-      p="4"
-      width="400px"
-      bg="white"
-      boxShadow="md"
+      borderRadius="2xl"
+      p={{ base: 4, md: 8 }}
+      width={{ base: "100%", sm: "90%", md: "420px" }}
+      bg="whiteAlpha.900"
+      boxShadow="2xl"
+      mx="auto"
     >
-      <Heading size="md" mb="4" color="primary.900">
+      <Heading size="md" mb="4" color="primary.900" textAlign="center">
         Create New Attendance Sheet
       </Heading>
 
@@ -78,6 +79,10 @@ const AttendanceForm = ({ onSheetCreated, onCancel }: AttendanceFormProps) => {
           placeholder="Enter course title"
           value={form.className}
           onChange={(e) => setForm({ ...form, className: e.target.value })}
+          bg="background.primary"
+          color="text.primary"
+          _placeholder={{ color: "text.secondary" }}
+          borderColor="primary.400"
         />
       </Field.Root>
 
@@ -87,6 +92,9 @@ const AttendanceForm = ({ onSheetCreated, onCancel }: AttendanceFormProps) => {
           type="date"
           value={form.date}
           onChange={(e) => setForm({ ...form, date: e.target.value })}
+          bg="background.primary"
+          color="text.primary"
+          borderColor="primary.400"
         />
       </Field.Root>
 
@@ -96,6 +104,10 @@ const AttendanceForm = ({ onSheetCreated, onCancel }: AttendanceFormProps) => {
           placeholder="Enter secret key"
           value={form.secretKey}
           onChange={(e) => setForm({ ...form, secretKey: e.target.value })}
+          bg="background.primary"
+          color="text.primary"
+          _placeholder={{ color: "text.secondary" }}
+          borderColor="primary.400"
         />
       </Field.Root>
 
@@ -106,24 +118,51 @@ const AttendanceForm = ({ onSheetCreated, onCancel }: AttendanceFormProps) => {
           placeholder="Enter max radius in meters"
           value={form.maxRadius}
           onChange={(e) => setForm({ ...form, maxRadius: e.target.value })}
+          bg="background.primary"
+          color="text.primary"
+          _placeholder={{ color: "text.secondary" }}
+          borderColor="primary.400"
         />
       </Field.Root>
       <Field.Root mb={4}>
         <Field.Label>Location (lat, lng)</Field.Label>
         <Flex gap={2}>
-          <Input placeholder="Latitude" value={form.location.lat} readOnly />
-          <Input placeholder="Longitude" value={form.location.lng} readOnly />
+          <Input
+            placeholder="Latitude"
+            value={form.location.lat}
+            readOnly
+            bg="background.primary"
+            color="text.primary"
+            borderColor="primary.400"
+          />
+          <Input
+            placeholder="Longitude"
+            value={form.location.lng}
+            readOnly
+            bg="background.primary"
+            color="text.primary"
+            borderColor="primary.400"
+          />
           <CustomButton
             title={locationLoading ? "Getting..." : "Use My Location"}
             onClick={handleUseLocation}
             disabled={locationLoading}
             size="sm"
+            bg="primary.700"
+            color="white"
+            _hover={{ bg: "primary.900", color: "white" }}
           />
         </Flex>
       </Field.Root>
 
       <Flex justify="flex-end" gap={4} mt={6}>
-        <CustomButton title="Cancel" bg="warning.900" onClick={onCancel} />
+        <CustomButton
+          title="Cancel"
+          bg="warning.900"
+          color="white"
+          _hover={{ bg: "warning.800", color: "white" }}
+          onClick={onCancel}
+        />
         <CustomButton
           title="Submit"
           onClick={handleSubmit}
@@ -137,6 +176,9 @@ const AttendanceForm = ({ onSheetCreated, onCancel }: AttendanceFormProps) => {
             isSubmitting
           }
           spinner={<BeatLoader size={8} color="white" />}
+          bg="primary.700"
+          color="white"
+          _hover={{ bg: "primary.900", color: "white" }}
         />
       </Flex>
     </Box>

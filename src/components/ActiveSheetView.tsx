@@ -11,7 +11,7 @@ import type { Sheet } from "../types";
 type ActiveSheetViewProps = {
   onClose: () => void;
 };
-const SHEETS_API = "http://localhost:4000/sheets";
+const SHEETS_API = "http://localhost:3000/api/v1/sheets";
 
 const ActiveSheetView = ({ onClose }: ActiveSheetViewProps) => {
   const { activeSheet } = useActiveSheet();
@@ -37,7 +37,7 @@ const ActiveSheetView = ({ onClose }: ActiveSheetViewProps) => {
     return null;
   }
 
-  const qrUrl = `${window.location.origin}/student?sheetId=${sheetInfo.id}`;
+  const qrUrl = `${window.location.origin}/student?sheetId=${sheetInfo._id}`;
 
   return (
     <Box mt={6} p={4} borderWidth="1px" borderRadius="md" bg="white">
@@ -56,9 +56,20 @@ const ActiveSheetView = ({ onClose }: ActiveSheetViewProps) => {
       <Flex mt={4} gap={3} justify="flex-end">
         <CustomButton
           title="View Large QR"
+          size="sm"
+          bg="primary.700"
+          color="white"
+          _hover={{ bg: "primary.900", color: "white" }}
           onClick={() => navigate(`/sheet/${activeSheet.sheetId}`)}
         />
-        <CustomButton title="Close Sheet" bg="warning.900" onClick={onClose} />
+        <CustomButton
+          title="Close Sheet"
+          size="sm"
+          bg="warning.900"
+          color="white"
+          _hover={{ bg: "warning.800", color: "white" }}
+          onClick={onClose}
+        />
       </Flex>
     </Box>
   );

@@ -1,10 +1,11 @@
-import { Box, Flex, Heading, Text } from "@chakra-ui/react";
+import { Box, Flex, Heading, Image, Text } from "@chakra-ui/react";
 
 const SignedInStudentPage = () => (
   <Flex height="100vh" align="center" justify="center" direction="column" p="6">
+    <Image src="/public/logo.svg" height={24} width={24} />
     <Box p={8} bg="background.primary" borderRadius="md" boxShadow="lg">
       <Heading color="text.primary" mb={4} textAlign="center">
-        You are signed in
+        Attend Classes
       </Heading>
       <Text color="text.secondary" fontSize="lg" textAlign="center">
         The attendance sheet is currently closed or inactive.
