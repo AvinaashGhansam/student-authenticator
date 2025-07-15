@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 130">
+    <!-- Stylized "A" -->
+    <g stroke="#2c3e50" stroke-width="8" fill="none" stroke-linecap="round">
+        <!-- Left and right legs -->
+        <path d="M30,100 L60,20 L90,100" />
+        <!-- Crossbar -->
+        <path d="M45,60 L75,60" />
+    </g>
+    <!-- Check‐mark -->
+    <path
+            d="M40,80 L55,95 L80,50"
+            stroke="#27ae60"
+            stroke-width="8"
+            fill="none"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+    />
+    <!-- Site name -->
+    <text
+            x="60"
+            y="120"
+            text-anchor="middle"
+            font-family="Arial, sans-serif"
+            font-size="14"
+            fill="#2c3e50"
+    >
+        attendclasses
+    </text>
+</svg>

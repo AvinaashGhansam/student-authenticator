@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
+    <defs>
+        <!-- Gradient background -->
+        <linearGradient id="bgGradient" x1="0" y1="0" x2="1200" y2="800" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#162a3b"/>
+            <stop offset="100%" stop-color="#244a5a"/>
+        </linearGradient>
+
+        <!-- Pattern of stylized "A" shapes -->
+        <pattern id="aPattern" patternUnits="userSpaceOnUse" width="240" height="240">
+            <path
+                    d="M20,200 L120,40 L220,200 M80,120 L160,120"
+                    stroke="#2c3e50"
+                    stroke-width="8"
+                    fill="none"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    opacity="0.1"
+            />
+        </pattern>
+    </defs>
+
+    <!-- Apply gradient -->
+    <rect width="1200" height="800" fill="url(#bgGradient)" />
+    <!-- Overlay subtle pattern -->
+    <rect width="1200" height="800" fill="url(#aPattern)" />
+</svg>
