@@ -258,7 +258,13 @@ const SignInPage = () => {
               required
             />
           </Field.Root>
-          <CustomButton title="Sign In" type="submit" />
+          <CustomButton
+            title="Sign In"
+            type="submit"
+            color="primary.50"
+            size="lg"
+            width={20}
+          />
         </form>
         <Button
           variant="ghost"

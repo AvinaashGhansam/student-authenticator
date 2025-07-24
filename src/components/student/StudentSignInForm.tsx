@@ -43,9 +43,9 @@ const StudentSignInForm: React.FC<StudentSignInFormProps> = ({
         _placeholder={{ color: "text.secondary" }}
         borderColor="primary.400"
       />
-      <Field.Label color="text.primary">Student Id</Field.Label>
+      <Field.Label>Student Id</Field.Label>
       <Input
-        placeholder="Your name"
+        placeholder="Student Id"
         value={studentId}
         onChange={(e) => onChange("studentId", e.target.value)}
         bg="background.primary"

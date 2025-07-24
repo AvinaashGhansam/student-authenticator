@@ -43,7 +43,7 @@ const SheetViewPage = () => {
         </Flex>
         <QRCode value={qrValue} size={280} style={{ margin: "0 auto" }} />
         <Text mt={4} fontSize="lg" color="gray.600" textAlign="center">
-          Sheet ID: {sheetId}
+          Sheet ID: http://localhost:5173/student?sheetId={sheetId}
         </Text>
         {activeSheet?.secretKey && (
           <Text

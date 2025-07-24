@@ -1,7 +1,7 @@
 import { useAuth } from "@clerk/clerk-react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Box, Button, Flex, Heading, Spinner, Text } from "@chakra-ui/react";
+import { Box, Flex, Heading, Spinner, Text } from "@chakra-ui/react";
 import { Table } from "@chakra-ui/react"; // Chakra v3 component-based table
 import axios from "axios";
 import CustomButton from "../components/ui/CustomButton.tsx";
@@ -71,8 +71,8 @@ const SheetLogPage = () => {
           Failed to load student logs. Please try again later.
         </Text>
         <CustomButton
-          color="primary.900"
-          title="Back to Dashboard"
+          color="text.primary"
+          title="← Back to Dashboard"
           onClick={() => navigate("/professor-dashboard")}
         />
       </Flex>
@@ -123,16 +123,20 @@ const SheetLogPage = () => {
   return (
     <Box p="6">
       <Flex justify="space-between" align="center" mb="6">
-        <Heading size="lg">Student Sign-In Log</Heading>
-        <Button
+        <Heading size="lg" color="text.primary" className="font-bold">
+          Student Attendance Log
+        </Heading>
+        <CustomButton
           onClick={() => navigate("/professor-dashboard")}
           colorScheme="blue"
-        >
-          Back to Dashboard
-        </Button>
+          color="text.primary"
+          title="<-Back to Dashboard"
+        />
       </Flex>
       <Flex mb={4} gap={6} align="center">
-        <Text fontWeight="bold">Total: {logs.length}</Text>
+        <Text fontWeight="bold" color="text.primary">
+          Total: {logs.length}
+        </Text>
         <Text color="green.600" fontWeight="bold">
           Verified: {verifiedCount}
         </Text>

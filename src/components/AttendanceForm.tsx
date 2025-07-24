@@ -148,6 +148,7 @@ const AttendanceForm = ({ onSheetCreated, onCancel }: AttendanceFormProps) => {
             onClick={handleUseLocation}
             disabled={locationLoading}
             size="sm"
+            width={150}
             bg="primary.700"
             color="white"
             _hover={{ bg: "primary.900", color: "white" }}
@@ -158,6 +159,7 @@ const AttendanceForm = ({ onSheetCreated, onCancel }: AttendanceFormProps) => {
       <Flex justify="flex-end" gap={4} mt={6}>
         <CustomButton
           title="Cancel"
+          width={20}
           bg="warning.900"
           color="white"
           _hover={{ bg: "warning.800", color: "white" }}
@@ -165,6 +167,7 @@ const AttendanceForm = ({ onSheetCreated, onCancel }: AttendanceFormProps) => {
         />
         <CustomButton
           title="Submit"
+          width={20}
           onClick={handleSubmit}
           loading={isSubmitting}
           disabled={

@@ -59,12 +59,14 @@ const ActiveSheetView = ({ onClose }: ActiveSheetViewProps) => {
           size="sm"
           bg="primary.700"
           color="white"
+          width={150}
           _hover={{ bg: "primary.900", color: "white" }}
           onClick={() => navigate(`/sheet/${activeSheet.sheetId}`)}
         />
         <CustomButton
           title="Close Sheet"
           size="sm"
+          width={150}
           bg="warning.900"
           color="white"
           _hover={{ bg: "warning.800", color: "white" }}

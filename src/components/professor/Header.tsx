@@ -32,6 +32,8 @@ const Header: React.FC<HeaderProps> = ({ user, onSignOut }) => {
         onClick={onSignOut}
         title="Sign Out"
         bg="warning.900"
+        color="primary.50"
+        width={20}
         _hover={{ bg: "warning.850" }}
         size="sm"
         position="absolute"
